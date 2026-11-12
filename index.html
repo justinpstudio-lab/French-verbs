@@ -185,6 +185,7 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 .close-btn{min-height:44px;padding:8px 16px;font-size:15px;}
 .overlay-title{font-size:20px;font-weight:600;}
 .m1-actions .btn{flex:1;padding:10px 6px;white-space:nowrap;}
+#m2-check,#m3-check{min-width:104px;}
 </style>
 </head>
 <body>
@@ -701,7 +702,7 @@ function ensureMode2(){
   </div>`;
   const inp=document.getElementById('m2-input');
   inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(m2Checked)newMode2();else checkMode2();}});
-  tapKeep(document.getElementById('m2-check'),checkMode2);
+  tapKeep(document.getElementById('m2-check'),()=>{if(m2Checked)newMode2();else checkMode2();});
   tapKeep(document.getElementById('m2-reveal'),revealMode2);
   tapKeep(document.getElementById('m2-next'),newMode2);
   const sp=document.getElementById('m2-speak');tapKeep(sp,()=>speak(m2Verb,sp));
@@ -714,12 +715,13 @@ function renderMode2(){
   document.getElementById('m2-sub').textContent=m2PL+' — '+m2TL;
   const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');
   inp.value='';inp.className='m2-input';fb.className='feedback';fb.textContent='';
-  document.getElementById('m2-answer-audio').innerHTML='';
+  document.getElementById('m2-answer-audio').innerHTML='';setCheckLabel('m2-check',false);
   try{inp.focus({preventScroll:true});}catch(e){inp.focus();}
 }
+function setCheckLabel(id,done){const b=document.getElementById(id);if(b){b.textContent=done?'Next →':'Check';b.classList.toggle('primary',true);}}
 function showAnswerAudio(){const w=document.getElementById('m2-answer-audio');if(!w)return;w.innerHTML='';const b=document.createElement('button');b.className='answer-speak';b.textContent='🔊 '+m2Answer;tapKeep(b,()=>speak(m2Answer,b));w.appendChild(b);}
-function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${m2Answer}</strong>`;sesWrong++;streak=0;}m2Checked=true;updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);}
-function revealMode2(){const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');inp.value=m2Answer;inp.classList.remove('correct','wrong');inp.classList.add('revealed');fb.classList.remove('ok','err');fb.textContent='';m2Checked=true;showAnswerAudio();}
+function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${m2Answer}</strong>`;sesWrong++;streak=0;}m2Checked=true;setCheckLabel('m2-check',true);updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);}
+function revealMode2(){const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');inp.value=m2Answer;inp.classList.remove('correct','wrong');inp.classList.add('revealed');fb.classList.remove('ok','err');fb.textContent='';m2Checked=true;setCheckLabel('m2-check',true);showAnswerAudio();}
 
 function getWeightedPickVocab(){
   const tot=(tenseData['vocab']||{total:0}).total||0;
@@ -764,14 +766,14 @@ function renderMode3(){
       <div class="btn-row"><button class="btn" id="m3-reveal">Reveal</button><div class="answer-slot"></div><button class="btn" id="m3-next">Next →</button></div>
     </div>`;
     document.getElementById('m3-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(m3Checked)newMode3();else checkMode3();}});
-    tapKeep(document.getElementById('m3-check'),checkMode3);
+    tapKeep(document.getElementById('m3-check'),()=>{if(m3Checked)newMode3();else checkMode3();});
     tapKeep(document.getElementById('m3-reveal'),revealMode3);
     tapKeep(document.getElementById('m3-next'),newMode3);
     const sp=document.getElementById('m3-speak');tapKeep(sp,()=>speak(m3Verb,sp));
   }
   document.getElementById('m3-verb').textContent=m3Verb;
   const inp=document.getElementById('m3-input'),fb=document.getElementById('m3-feedback');
-  inp.value='';inp.className='m2-input';fb.className='feedback';fb.textContent='';
+  inp.value='';inp.className='m2-input';fb.className='feedback';fb.textContent='';setCheckLabel('m3-check',false);
   try{inp.focus({preventScroll:true});}catch(e){inp.focus();}
 }
 
@@ -783,13 +785,13 @@ function checkMode3(){
   inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');
   if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}
   else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Accepted: <strong>${m3Meaning}</strong>`;sesWrong++;streak=0;}
-  m3Checked=true;updateScore();recordResult(m3Verb,'vocab',ok);
+  m3Checked=true;setCheckLabel('m3-check',true);updateScore();recordResult(m3Verb,'vocab',ok);
 }
 
 function revealMode3(){
   const inp=document.getElementById('m3-input'),fb=document.getElementById('m3-feedback');
   inp.value=m3Meaning;inp.classList.remove('correct','wrong');inp.classList.add('revealed');
-  fb.classList.remove('ok','err');fb.textContent='';m3Checked=true;
+  fb.classList.remove('ok','err');fb.textContent='';m3Checked=true;setCheckLabel('m3-check',true);
 }
 
 
