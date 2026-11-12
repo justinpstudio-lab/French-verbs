@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>French Verbs</title>
+<script>try{var t=JSON.parse(localStorage.getItem("frverb-settings-v1")||"{}").theme;if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,7 +26,7 @@
   --radius:8px;--radius-lg:12px;
 }
 @media(prefers-color-scheme:dark){
-  :root{
+  :root:not([data-theme="light"]){color-scheme:dark;
     --bg:#1e1e1e;--bg2:#2a2a2a;--bg3:#333333;
     --text:#f0f0f0;--text2:#aaaaaa;--text3:#666666;
     --border:#3a3a3a;--border2:#555555;
@@ -35,6 +36,16 @@
     --warn-bg:#3b2a00;--warn-text:#fcd34d;--warn-border:#f59e0b;
   }
 }
+:root[data-theme="dark"]{color-scheme:dark;
+    --bg:#1e1e1e;--bg2:#2a2a2a;--bg3:#333333;
+    --text:#f0f0f0;--text2:#aaaaaa;--text3:#666666;
+    --border:#3a3a3a;--border2:#555555;
+    --info-bg:#1e3a5f;--info-text:#93c5fd;--info-border:#3b82f6;
+    --success-bg:#14381a;--success-text:#86efac;--success-border:#4ade80;
+    --danger-bg:#3b1a1a;--danger-text:#fca5a5;--danger-border:#f87171;
+    --warn-bg:#3b2a00;--warn-text:#fcd34d;--warn-border:#f59e0b;
+  }
+:root[data-theme="light"]{color-scheme:light;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;padding:0;}
 .container{max-width:780px;margin:0 auto;padding:1.5rem 1rem;}
 h1{font-size:22px;font-weight:500;margin-bottom:0.25rem;}
@@ -148,7 +159,8 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 .mode-bar{gap:4px;padding:4px;background:var(--bg2);border-radius:12px;margin-bottom:10px;}
 .mode-btn{min-height:40px;padding:8px 4px;border:none;border-radius:9px;font-size:15px;color:var(--text2);}
 .mode-btn.active{background:var(--bg);color:var(--text);border:none;box-shadow:0 1px 3px rgba(0,0,0,.18);font-weight:600;}
-@media(prefers-color-scheme:dark){.mode-btn.active{background:var(--bg3);}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .mode-btn.active{background:var(--bg3);}}
+:root[data-theme="dark"] .mode-btn.active{background:var(--bg3);}
 .sub-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .sub-bar .srs-badge,.sub-bar .filter-badge{margin-left:auto;}
 .tense-toggle{min-height:36px;padding:6px 14px;border-radius:18px;border:1.5px solid var(--border2);background:transparent;color:var(--text);font-size:14px;font-family:inherit;}
@@ -186,14 +198,37 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 .overlay-title{font-size:20px;font-weight:600;}
 .m1-actions .btn{flex:1;padding:10px 6px;white-space:nowrap;}
 #m2-check,#m3-check{min-width:104px;}
+.app-head h1{font-size:21px;}
+.app-head .icon-btn{width:42px;height:42px;}
+.score-pill{font-size:13px;padding:3px 9px;}
+[hidden]{display:none!important;}
+.goal-pill,.streak-pill{font-size:13px;padding:5px 10px;border-radius:14px;background:var(--bg2);color:var(--text2);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.goal-pill.met{color:var(--success-text);font-weight:600;}
+.sub-bar{min-height:36px;}
+.set-section{margin-bottom:26px;}
+.set-section>.section-title{margin-bottom:4px;}
+.tg{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);cursor:pointer;}
+.tg-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.tg-title{font-size:16px;color:var(--text);}
+.tg-desc{font-size:13px;color:var(--text2);line-height:1.35;}
+.switch{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--border2);position:relative;flex-shrink:0;transition:background .2s;cursor:pointer;margin:0;}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s;}
+.switch:checked{background:#34c759;}
+.switch:checked::after{transform:translateX(20px);}
+.set-pick{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);}
+.set-pick select{max-width:55%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;}
+.pick-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0 4px;}
+.pick-chip{font-size:14px;padding:7px 14px;min-height:36px;border-radius:18px;border:1.5px solid var(--border2);background:transparent;color:var(--text2);font-family:inherit;}
+.pick-chip.on{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);font-weight:500;}
 </style>
 </head>
 <body>
 <div class="container">
   <header class="app-head">
     <h1>French Verbs</h1>
-    <div class="score"><span class="score-pill good" id="sc-right">✓ 0</span><span class="score-pill bad" id="sc-wrong">✗ 0</span><span id="streak-label"></span></div>
-    <button class="icon-btn" onclick="openStats()" aria-label="Stats, settings and backup">📊</button>
+    <div class="score"><span class="score-pill good" id="sc-right">✓ 0</span><span class="score-pill bad" id="sc-wrong">✗ 0</span></div>
+    <button class="icon-btn" onclick="openStats()" aria-label="Stats and backup">📊</button>
+    <button class="icon-btn" onclick="openSettings()" aria-label="Settings">⚙️</button>
   </header>
   <div class="mode-bar">
     <button class="mode-btn active" id="btn-m1" onclick="setMode(1)">Conjugate</button>
@@ -202,7 +237,9 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
   </div>
   <div class="sub-bar" id="sub-bar">
     <button class="tense-toggle" id="tense-toggle" onclick="toggleTensePanel()" style="display:none;">Tenses: All ▾</button>
-    <span class="srs-badge" id="srs-badge">freq. weighted</span>
+    <span style="flex:1"></span>
+    <span class="goal-pill" id="goal-pill" hidden></span>
+    <span class="streak-pill" id="streak-pill" hidden></span>
   </div>
   <div class="tense-filter" id="tense-filter" style="display:none;"><div class="tense-chips" id="tense-chips"></div></div>
   <div id="mode1-verb-picker">
@@ -219,24 +256,34 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 <div class="overlay" id="stats-overlay">
   <div class="overlay-inner">
     <div class="overlay-header">
-      <span class="overlay-title">Progress &amp; settings</span>
+      <span class="overlay-title">Progress &amp; backup</span>
       <button class="close-btn" onclick="closeStats()">Close</button>
     </div>
     <div id="stats-content"><div class="no-data">Loading…</div></div>
-    <div id="settings-content" style="margin-top:2rem;padding-top:1.25rem;border-top:0.5px solid var(--border);"></div>
+    <div id="backup-content" style="margin-top:2rem;padding-top:1.25rem;border-top:0.5px solid var(--border);"></div>
+  </div>
+</div>
+
+<div class="overlay" id="settings-overlay">
+  <div class="overlay-inner">
+    <div class="overlay-header">
+      <span class="overlay-title">Settings</span>
+      <button class="close-btn" onclick="closeSettings()">Done</button>
+    </div>
+    <div id="settings-page"></div>
   </div>
 </div>
 
 <script>
 // ── SPEECH ────────────────────────────────────────────────────────────
-const KS='frverb-settings-v1';let SET={voice:'',rate:0.88};
+const KS='frverb-settings-v1';let SET={voice:'',rate:0.88,autoPlay:false,autoAdvance:false,strictAccents:false,includeOn:false,pool:0,m1Tenses:null,rememberTenses:true,savedTenses:null,goal:30,theme:'system',mode:1};
 try{const r=localStorage.getItem(KS);if(r)SET={...SET,...JSON.parse(r)};}catch(e){}
 function saveSet(){try{localStorage.setItem(KS,JSON.stringify(SET));}catch(e){}}
 let frVoices=[],frVoice=null;
 function voiceScore(v){const t=(v.name+' '+v.voiceURI).toLowerCase();return(/premium/.test(t)?40:/enhanced/.test(t)?30:/compact/.test(t)?0:10)+(/^fr[-_]fr/i.test(v.lang)?100:/^fr[-_]ca/i.test(v.lang)?20:0);} // France first, then quality
 function voiceLabel(v){const t=(v.name+' '+v.voiceURI).toLowerCase(),q=/premium/.test(t)?'Premium':/enhanced/.test(t)?'Enhanced':'';return v.name.replace(/\s*\((premium|enhanced)\)\s*/i,' ').trim()+(q?' ('+q+')':'')+' · '+v.lang.replace('_','-');}
 function initVoice(){try{frVoices=speechSynthesis.getVoices().filter(x=>/^fr/i.test(x.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));frVoice=frVoices.find(x=>x.voiceURI===SET.voice)||frVoices[0]||null;}catch(e){frVoice=null;}}
-if(window.speechSynthesis){speechSynthesis.addEventListener('voiceschanged',()=>{initVoice();const o=document.getElementById('stats-overlay');if(o&&o.style.display==='block')renderSettings();});initVoice();}
+if(window.speechSynthesis){speechSynthesis.addEventListener('voiceschanged',()=>{initVoice();const o=document.getElementById('stats-overlay');if(o&&o.style.display==='block')renderBackup();const so=document.getElementById('settings-overlay');if(so&&so.style.display==='block')renderSettingsPage();});initVoice();}
 function speak(text,btn){
   if(!window.speechSynthesis)return;
   initVoice(); // fresh voice object: iOS can ignore a stale one
@@ -276,16 +323,18 @@ function recordResult(verb,tk,ok){
   if(!verbData[verb])verbData[verb]={};
   if(!verbData[verb][tk])verbData[verb][tk]={total:0,correct:0};
   verbData[verb][tk].total++;if(ok)verbData[verb][tk].correct++;
-  saveAll();updateSrsBadge();
+  saveAll();updateSrsBadge();updateHeader();
 }
 function clearAllData(){
   dailyData={};tenseData={};verbData={};
   try{localStorage.removeItem(KD);localStorage.removeItem(KT);localStorage.removeItem(KV);}catch(e){}
-  updateSrsBadge();renderStatsContent();
+  updateSrsBadge();renderStatsContent();updateHeader();
 }
 
 // ── VERB LIST ─────────────────────────────────────────────────────────
-const VERBS=[['être','to be'],['avoir','to have'],['faire','to do, to make'],['dire','to say, to tell'],['aller','to go'],['voir','to see'],['savoir','to know'],['pouvoir','to be able to'],['vouloir','to want'],['venir','to come'],['prendre','to take'],['mettre','to put'],['devoir','to have to'],['croire','to believe'],['trouver','to find'],['donner','to give'],['penser','to think'],['parler','to speak'],['demander','to ask'],['laisser','to leave, to let'],['passer','to pass'],['regarder','to watch'],['aimer','to like, to love'],['porter','to carry, to wear'],['arriver','to arrive'],['rendre','to give back'],['sortir','to go out'],['entendre','to hear'],['tenir','to hold'],['chercher','to look for'],['rester','to stay'],['répondre','to answer'],['connaître','to know (a person)'],['suivre','to follow'],['vivre','to live'],['écrire','to write'],['sentir','to feel, to smell'],['attendre','to wait for'],['monter','to go up'],['entrer','to enter'],['partir','to leave'],['comprendre','to understand'],['lire','to read'],['tomber','to fall'],['jouer','to play'],['travailler','to work'],['perdre','to lose'],['produire','to produce'],['agir','to act'],['permettre','to allow'],['appeler','to call'],['décider','to decide'],['gagner','to win, to earn'],['ouvrir','to open'],['choisir','to choose'],['recevoir','to receive'],['continuer','to continue'],['apprendre','to learn'],['courir','to run'],['mourir','to die'],['finir','to finish'],['utiliser','to use'],['aider','to help'],['rencontrer','to meet'],['naître','to be born'],['obtenir','to obtain'],['changer','to change'],['montrer','to show'],['revenir','to come back'],['essayer','to try'],['manger','to eat'],['créer','to create'],['construire','to build'],['commencer','to start'],['devenir','to become'],['écouter','to listen to'],['proposer','to suggest'],['développer','to develop'],['boire','to drink'],['conduire','to drive'],['appartenir','to belong'],['joindre','to join'],['toucher','to touch'],['lever','to lift'],['marcher','to walk'],['couper','to cut'],['fermer','to close'],['préparer','to prepare'],['expliquer','to explain'],['acheter','to buy'],['exprimer','to express'],['refuser','to refuse'],['établir','to establish'],['réaliser','to achieve'],['remplir','to fill'],['servir','to serve'],['empêcher','to prevent'],['lancer','to launch'],['vendre','to sell'],['annoncer','to announce'],['réunir','to unite'],['envoyer','to send'],['accorder','to grant'],['maintenir','to maintain'],['poser','to put down'],['déclarer','to declare'],['souffrir','to suffer'],['terminer','to finish'],['offrir','to offer'],['protéger','to protect'],['observer','to observe'],['traiter','to treat'],['former','to form'],['pousser','to push'],['retenir','to retain'],['nommer','to name'],['paraître','to seem'],['plaire','to please'],['résoudre','to solve'],['éteindre','to turn off'],['peindre','to paint'],['craindre','to fear'],['atteindre','to reach'],['réduire','to reduce'],['traduire','to translate'],['détruire','to destroy'],['rire','to laugh'],['sourire','to smile'],['dormir','to sleep'],['mentir','to lie'],['bâtir','to build'],['grandir','to grow up'],['rougir','to blush'],['obéir','to obey'],['réussir','to succeed'],['applaudir','to applaud'],['réfléchir','to think, to reflect'],['saisir','to seize'],['nourrir','to feed'],['chanter','to sing'],['voyager','to travel'],['nager','to swim'],['plonger','to dive'],['abandonner','to abandon'],['accepter','to accept'],['accueillir','to welcome'],['achever','to complete'],['adapter','to adapt'],['affirmer','to affirm'],['ajouter','to add'],['analyser','to analyze'],['apercevoir','to notice'],['appliquer','to apply'],['approcher','to approach'],['assurer','to assure'],['attraper','to catch'],['avancer','to advance'],['céder','to yield'],['compléter','to complete'],['considérer','to consider'],['contrôler','to control'],['corriger','to correct'],['couvrir','to cover'],['débuter','to begin'],['définir','to define'],['dépasser','to exceed'],['dépendre','to depend'],['descendre','to go down'],['décrire','to describe'],['diriger','to direct'],['discuter','to discuss'],['diviser','to divide'],['dominer','to dominate'],['durer','to last'],['élever','to raise'],['encourager','to encourage'],['enseigner','to teach'],['espérer','to hope'],['évaluer','to evaluate'],['éviter','to avoid'],['fixer','to fix'],['forcer','to force'],['garder','to keep'],['gérer','to manage'],['habiter','to live in'],['identifier','to identify'],['imaginer','to imagine'],['informer','to inform'],['interdire','to forbid'],['inviter','to invite'],['limiter','to limit'],['manquer','to miss'],['modifier','to modify'],['organiser','to organize'],['partager','to share'],['progresser','to progress'],['réagir','to react'],['regretter','to regret'],['rejoindre','to join'],['remarquer','to notice'],['remplacer','to replace'],['reprendre','to resume'],['respecter','to respect'],['résister','to resist'],['révéler','to reveal'],['souhaiter','to wish'],['soutenir','to support'],['surprendre','to surprise'],['tenter','to attempt'],['tirer','to pull'],['transformer','to transform'],['traverser','to cross'],['vaincre','to defeat'],['vérifier','to verify'],['admettre','to admit'],['améliorer','to improve'],['amener','to bring'],['attirer','to attract'],['battre','to beat'],['confondre','to confuse'],['conserver','to preserve'],['coûter','to cost'],['défendre','to defend'],['dépenser','to spend'],['emmener','to take along'],['emporter','to take away'],['enlever','to remove'],['épargner','to save'],['exposer','to display'],['garantir','to guarantee'],['inquiéter','to worry'],['installer','to install'],['intégrer','to integrate'],['investir','to invest'],['libérer','to free'],['mériter','to deserve'],['mélanger','to mix'],['négocier','to negotiate'],['participer','to participate'],['percevoir','to perceive'],['persévérer','to persevere'],['posséder','to possess'],['poursuivre','to pursue'],['pratiquer','to practice'],['reconnaître','to recognize'],['refléter','to reflect'],['remettre','to hand over'],['répéter','to repeat'],['retirer','to withdraw'],['rompre','to break'],['satisfaire','to satisfy'],['soumettre','to submit'],['supposer','to suppose'],['supprimer','to delete'],['tromper','to deceive'],['troubler','to disturb'],['tuer','to kill'],['veiller','to watch over'],['voter','to vote'],['arrêter','to stop'],['déplacer','to move'],['emprunter','to borrow'],['entretenir','to maintain'],['habiller','to dress'],['inspirer','to inspire'],['mener','to lead'],['préférer','to prefer'],['promettre','to promise'],['quitter','to leave'],['rejeter','to reject'],['remercier','to thank'],['sauver','to save'],['téléphoner','to call'],['visiter','to visit'],['contenir','to contain'],['concevoir','to design'],['décevoir','to disappoint'],['prédire','to predict'],['abattre','to knock down'],['accélérer','to accelerate'],['accompagner','to accompany'],['augmenter','to increase'],['bouger','to move'],['brûler','to burn'],['calculer','to calculate'],['compter','to count'],['conclure','to conclude'],['danser','to dance'],['diminuer','to decrease'],['dresser','to set up'],['échapper','to escape'],['échanger','to exchange'],['émerger','to emerge'],['embrasser','to embrace, to kiss'],['émettre','to emit'],['enregistrer','to record'],['entourer','to surround'],['éprouver','to feel, to experience'],['exclure','to exclude'],['exploiter','to exploit'],['flotter','to float'],['frapper','to hit, to strike'],['fuir','to flee'],['grimper','to climb'],['ignorer','to ignore'],['insérer','to insert'],['insister','to insist'],['interroger','to question'],['jeter','to throw'],['livrer','to deliver'],['lutter','to fight, to struggle'],['menacer','to threaten'],['nier','to deny'],['noter','to note'],['nuire','to harm'],['oser','to dare'],['oublier','to forget'],['payer','to pay'],['peser','to weigh'],['pleurer','to cry'],['profiter','to take advantage'],['projeter','to project, to plan'],['prolonger','to extend'],['punir','to punish'],['ramener','to bring back'],['rattraper','to catch up'],['reculer','to step back'],['relever','to raise, to pick up'],['résumer','to summarize'],['risquer','to risk'],['rouler','to roll, to drive'],['sembler','to seem'],['serrer','to tighten, to grip'],['suffire','to suffice'],['tendre','to stretch, to hold out'],['triompher','to triumph'],['voler','to fly, to steal'],['nettoyer','to clean'],['rappeler','to call back'],];
+// Ordered by frequency: Lexique 3.83 lemma frequencies (films + books, per million words),
+// with forms shared with être/avoir (e.g. suis) excluded so suivre isn't inflated.
+const VERBS=[['être','to be'],['avoir','to have'],['faire','to do, to make'],['aller','to go'],['dire','to say, to tell'],['pouvoir','to be able to'],['vouloir','to want'],['voir','to see'],['savoir','to know'],['devoir','to have to'],['venir','to come'],['prendre','to take'],['parler','to speak'],['passer','to pass'],['croire','to believe'],['aimer','to like, to love'],['penser','to think'],['trouver','to find'],['regarder','to watch'],['laisser','to leave, to let'],['donner','to give'],['mettre','to put'],['attendre','to wait for'],['arriver','to arrive'],['demander','to ask'],['rester','to stay'],['appeler','to call'],['partir','to leave'],['connaître','to know (a person)'],['sortir','to go out'],['comprendre','to understand'],['arrêter','to stop'],['entendre','to hear'],['mourir','to die'],['sentir','to feel, to smell'],['tenir','to hold'],['chercher','to look for'],['revenir','to come back'],['tuer','to kill'],['rendre','to give back'],['finir','to finish'],['devenir','to become'],['vivre','to live'],['essayer','to try'],['perdre','to lose'],['jouer','to play'],['ouvrir','to open'],['commencer','to start'],['tomber','to fall'],['entrer','to enter'],['aider','to help'],['rentrer','to go back, to come home, to return'],['sembler','to seem'],['tirer','to pull'],['porter','to carry, to wear'],['écouter','to listen to'],['oublier','to forget'],['manger','to eat'],['plaire','to please'],['répondre','to answer'],['retrouver','to find again, to meet up with'],['marcher','to walk'],['travailler','to work'],['monter','to go up'],['changer','to change'],['dormir','to sleep'],['écrire','to write'],['suivre','to follow'],['apprendre','to learn'],['poser','to put down'],['boire','to drink'],['lever','to lift'],['lire','to read'],['montrer','to show'],['servir','to serve'],['garder','to keep'],['quitter','to leave'],['occuper','to occupy, to keep busy'],['tourner','to turn'],['paraître','to seem'],['payer','to pay'],['continuer','to continue'],['envoyer','to send'],['descendre','to go down'],['retourner','to return, to go back, to turn over'],['jeter','to throw'],['raconter','to tell, to recount'],['rappeler','to call back'],['gagner','to win, to earn'],['reprendre','to resume'],['excuser','to excuse, to forgive'],['rire','to laugh'],['toucher','to touch'],['manquer','to miss'],['acheter','to buy'],['espérer','to hope'],['fermer','to close'],['imaginer','to imagine'],['expliquer','to explain'],['importer','to matter, to import'],['compter','to count'],['rencontrer','to meet'],['décider','to decide'],['prier','to pray, to beg'],['recevoir','to receive'],['agir','to act'],['pousser','to push'],['valoir','to be worth'],['courir','to run'],['offrir','to offer'],['suffire','to suffice'],['cacher','to hide'],['battre','to beat'],['coucher','to put to bed, to lay down'],['emmener','to take along'],['reconnaître','to recognize'],['apporter','to bring'],['bouger','to move'],['permettre','to allow'],['crier','to shout, to scream'],['pleurer','to cry'],['disparaître','to disappear'],['remettre','to hand over'],['sauver','to save'],['préparer','to prepare'],['frapper','to hit, to strike'],['voler','to fly, to steal'],['découvrir','to discover, to uncover'],['sourire','to smile'],['conduire','to drive'],['approcher','to approach'],['préférer','to prefer'],['accepter','to accept'],['ressembler','to resemble, to look like'],['choisir','to choose'],['revoir','to see again'],['réveiller','to wake up, to awaken'],['présenter','to present, to introduce'],['vendre','to sell'],['répéter','to repeat'],['couper','to cut'],['refuser','to refuse'],['empêcher','to prevent'],['chanter','to sing'],['avancer','to advance'],['promettre','to promise'],['marier','to marry'],['exister','to exist'],['amener','to bring'],['inquiéter','to worry'],['ramener','to bring back'],['embrasser','to embrace, to kiss'],['traverser','to cross'],['apercevoir','to notice'],['ignorer','to ignore'],['glisser','to slip, to slide'],['ajouter','to add'],['amuser','to amuse, to entertain'],['lâcher','to let go, to release'],['serrer','to tighten, to grip'],['intéresser','to interest'],['sauter','to jump'],['réussir','to succeed'],['casser','to break'],['enlever','to remove'],['rêver','to dream'],['tromper','to deceive'],['cesser','to stop, to cease'],['oser','to dare'],['tendre','to stretch, to hold out'],['terminer','to finish'],['habiter','to live in'],['lancer','to launch'],['abandonner','to abandon'],['adorer','to adore, to love'],['mener','to lead'],['mentir','to lie'],['naître','to be born'],['assurer','to assure'],['souffrir','to suffer'],['installer','to install'],['rejoindre','to join'],['remonter','to go back up, to climb back'],['jurer','to swear'],['danser','to dance'],['échapper','to escape'],['utiliser','to use'],['craindre','to fear'],['rouler','to roll, to drive'],['remarquer','to notice'],['couvrir','to cover'],['maintenir','to maintain'],['retenir','to retain'],['charger','to load, to charge'],['accompagner','to accompany'],['brûler','to burn'],['calmer','to calm, to soothe'],['tenter','to attempt'],['réfléchir','to think, to reflect'],['apparaître','to appear'],['prévenir','to warn, to inform, to prevent'],['protéger','to protect'],['risquer','to risk'],['obliger','to oblige, to force'],['inviter','to invite'],['éviter','to avoid'],['arranger','to arrange, to fix'],['emporter','to take away'],['proposer','to suggest'],['annoncer','to announce'],['filer','to spin, to run off, to slip away'],['atteindre','to reach'],['traîner','to drag, to hang around'],['détester','to hate, to detest'],['deviner','to guess'],['pardonner','to forgive, to pardon'],['fumer','to smoke'],['supposer','to suppose'],['parvenir','to reach, to manage'],['reposer','to rest, to put back'],['baisser','to lower'],['retirer','to withdraw'],['respirer','to breathe'],['détruire','to destroy'],['épouser','to marry, to wed'],['séparer','to separate'],['durer','to last'],['éloigner','to move away, to distance'],['traiter','to treat'],['fixer','to fix'],['surprendre','to surprise'],['appartenir','to belong'],['pencher','to lean, to tilt'],['saisir','to seize'],['poursuivre','to pursue'],['allumer','to light, to switch on'],['déranger','to disturb, to bother'],['étonner','to astonish, to surprise'],['attaquer','to attack'],['défendre','to defend'],['obtenir','to obtain'],['couler','to flow, to sink'],['remercier','to thank'],['recommencer','to start again, to begin again'],['attraper','to catch'],['souhaiter','to wish'],['arracher','to tear out, to pull out'],['supporter','to bear, to stand, to support'],['appuyer','to press, to lean'],['mêler','to mix, to mingle'],['sonner','to ring'],['douter','to doubt'],['regretter','to regret'],['relever','to raise, to pick up'],['engager','to hire, to engage'],['diriger','to direct'],['dégager','to clear, to free'],['observer','to observe'],['coller','to stick, to glue'],['profiter','to take advantage'],['partager','to share'],['avouer','to confess, to admit'],['élever','to raise'],['prévoir','to foresee, to plan'],['discuter','to discuss'],['placer','to place, to put'],['signer','to sign'],['fuir','to flee'],['juger','to judge'],['hésiter','to hesitate'],['entraîner','to train, to drag along, to lead to'],['mériter','to deserve'],['accrocher','to hang, to hook'],['vérifier','to verify'],['éprouver','to feel, to experience'],['former','to form'],['prêter','to lend'],['ressentir','to feel'],['blesser','to hurt, to injure, to wound'],['crever','to burst, to die'],['repartir','to leave again, to set off again'],['écraser','to crush, to run over'],['marquer','to mark, to score'],['laver','to wash'],['commander','to order, to command'],['remplir','to fill'],['demeurer','to remain, to live'],['éclater','to burst, to explode'],['livrer','to deliver'],['prouver','to prove'],['forcer','to force'],['régler','to settle, to adjust'],['créer','to create'],['surveiller','to watch, to supervise'],['dîner','to have dinner, to dine'],['soulever','to lift, to raise'],['entourer','to surround'],['promener','to walk, to take for a walk'],['secouer','to shake'],['représenter','to represent'],['éteindre','to turn off'],['étendre','to spread, to stretch, to extend'],['causer','to cause, to chat'],['coûter','to cost'],['murmurer','to murmur, to whisper'],['allonger','to lengthen, to lay down'],['considérer','to consider'],['attirer','to attract'],['songer','to think, to dream'],['plaindre','to pity, to feel sorry for'],['taper','to hit, to type'],['gêner','to bother, to embarrass'],['adresser','to address'],['enfermer','to lock up, to shut in'],['trembler','to tremble, to shake'],['enfoncer','to push in, to drive in'],['téléphoner','to call'],['désirer','to desire, to want'],['fatiguer','to tire'],['habiller','to dress'],['posséder','to possess'],['libérer','to free'],['virer','to fire, to turn, to transfer'],['inventer','to invent'],['presser','to press, to hurry'],['chasser','to hunt, to chase'],['hurler','to scream, to howl'],['ennuyer','to bore, to annoy'],['dépasser','to exceed'],['apprécier','to appreciate'],['endormir','to put to sleep'],['reculer','to step back'],['construire','to build'],['accorder','to grant'],['rapporter','to bring back, to report'],['produire','to produce'],['ramasser','to pick up, to collect'],['plonger','to dive'],['interdire','to forbid'],['dresser','to set up'],['attacher','to attach, to tie'],['interroger','to question'],['écarter','to move aside, to spread'],['nourrir','to feed'],['briser','to break, to shatter'],['peindre','to paint'],['déposer','to drop off, to deposit, to put down'],['ranger','to tidy, to put away'],['signifier','to mean, to signify'],['piquer','to sting, to prick, to steal'],['déclarer','to declare'],['plaisanter','to joke'],['planter','to plant'],['remplacer','to replace'],['saluer','to greet, to salute'],['convenir','to suit, to agree'],['souffler','to blow'],['prononcer','to pronounce'],['confier','to entrust, to confide'],['grandir','to grow up'],['débarrasser','to clear, to get rid of'],['briller','to shine'],['dessiner','to draw, to design'],['admettre','to admit'],['insister','to insist'],['nommer','to name'],['balancer','to swing, to throw'],['récupérer','to recover, to get back'],['réaliser','to achieve'],['pénétrer','to penetrate, to enter'],['renoncer','to give up, to renounce'],['croiser','to cross, to run into'],['achever','to complete'],['disposer','to arrange, to have available'],['éclairer','to light, to illuminate'],['agiter','to shake, to wave'],['refermer','to close again'],['rater','to miss, to fail'],['convaincre','to convince'],['prétendre','to claim, to pretend'],['transformer','to transform'],['exprimer','to express'],['menacer','to threaten'],['imposer','to impose'],['renvoyer','to send back, to dismiss, to fire'],['vider','to empty'],['étudier','to study'],['avaler','to swallow'],['pendre','to hang'],['admirer','to admire'],['ravir','to delight, to snatch'],['concerner','to concern'],['caresser','to stroke, to caress'],['effacer','to erase, to delete'],['refaire','to redo, to do again'],['respecter','to respect'],['réunir','to unite'],['parier','to bet'],['rassurer','to reassure'],['dépendre','to depend'],['soutenir','to support'],['organiser','to organize'],['exiger','to demand, to require'],['peser','to weigh'],['abattre','to knock down'],['rompre','to break'],['mordre','to bite'],['révéler','to reveal'],['réparer','to repair, to fix'],['assister','to attend, to assist'],['accuser','to accuse'],['enterrer','to bury'],['interrompre','to interrupt'],['survivre','to survive'],['haïr','to hate'],['résister','to resist'],['obéir','to obey'],['soigner','to treat, to care for'],['indiquer','to indicate, to show'],['nettoyer','to clean'],['contenter','to satisfy, to please'],['fouiller','to search, to rummage'],['claquer','to slam, to snap'],['creuser','to dig'],['contenir','to contain'],['condamner','to condemn, to sentence'],['trahir','to betray'],['supplier','to beg, to implore'],['étouffer','to suffocate, to stifle'],['fabriquer','to make, to manufacture'],['coincer','to wedge, to jam, to corner'],['remuer','to stir, to move'],['bosser','to work'],['visiter','to visit'],['examiner','to examine'],['distinguer','to distinguish'],['accueillir','to welcome'],['repousser','to push back, to postpone'],['céder','to yield'],['échanger','to exchange'],['déplacer','to move'],['détacher','to detach, to untie'],['verser','to pour'],['évoquer','to evoke, to mention'],['commettre','to commit'],['établir','to establish'],['surgir','to emerge, to spring up'],['subir','to undergo, to suffer'],['franchir','to cross, to get over'],['lier','to tie, to link'],['provoquer','to provoke, to cause'],['contrôler','to control'],['goûter','to taste'],['fournir','to supply, to provide'],['réserver','to book, to reserve'],['rigoler','to laugh, to joke'],['recouvrir','to cover'],['accomplir','to accomplish'],['veiller','to watch over'],['rapprocher','to bring closer'],['déchirer','to tear, to rip'],['combattre','to fight, to combat'],['affirmer','to affirm'],['joindre','to join'],['conclure','to conclude'],['précipiter','to hurl, to rush'],['rassembler','to gather, to assemble'],['réduire','to reduce'],['habituer','to accustom, to get used to'],['résoudre','to solve'],['exploser','to explode'],['rattraper','to catch up'],['énerver','to annoy, to irritate'],['louer','to rent, to praise'],['parcourir','to travel through, to skim'],['désigner','to designate, to point out'],['flotter','to float'],['bouffer','to eat'],['noter','to note'],['soupirer','to sigh'],['envahir','to invade'],['guérir','to cure, to heal'],['lutter','to fight, to struggle'],['cracher','to spit'],['hausser','to raise, to shrug'],['participer','to participate'],['redresser','to straighten, to set right'],['voyager','to travel'],['contempler','to contemplate, to gaze at'],['éveiller','to awaken, to arouse'],['ordonner','to order, to command'],['raser','to shave'],['grimper','to climb'],['foncer','to rush, to charge, to darken'],['figurer','to appear, to represent'],['inspirer','to inspire'],['vêtir','to dress, to clothe'],['déjeuner','to have lunch'],['rejeter','to reject'],['réclamer','to claim, to demand'],['conserver','to preserve'],['régner','to reign, to rule'],['confondre','to confuse'],['retomber','to fall again, to fall back'],['étaler','to spread, to display'],['détourner','to divert, to hijack'],['fâcher','to anger, to upset'],['décrire','to describe'],['avertir','to warn'],['inscrire','to register, to enroll, to write down'],['gâcher','to waste, to spoil'],['constater','to note, to observe'],['rechercher','to search for, to research'],['détendre','to relax, to loosen'],['baigner','to bathe'],['bénir','to bless'],['conseiller','to advise'],['mesurer','to measure'],['fonctionner','to work, to function'],['effrayer','to frighten, to scare'],['essuyer','to wipe, to dry'],['priver','to deprive'],['dominer','to dominate'],['noyer','to drown'],['appliquer','to apply'],['employer','to use, to employ'],['viser','to aim'],['démarrer','to start'],['répandre','to spread, to spill'],['plier','to fold, to bend'],['reprocher','to reproach, to blame'],['opposer','to oppose'],['gonfler','to inflate, to swell'],['pointer','to point'],['renverser','to knock over, to spill, to overturn'],['constituer','to constitute, to form'],['satisfaire','to satisfy'],['emprunter','to borrow'],['punir','to punish'],['exposer','to display'],['entretenir','to maintain'],['informer','to inform'],['identifier','to identify'],['réagir','to react'],['nager','to swim'],['soumettre','to submit'],['enseigner','to teach'],['décevoir','to disappoint'],['troubler','to disturb'],['vaincre','to defeat'],['épargner','to save'],['rougir','to blush'],['augmenter','to increase'],['traduire','to translate'],['nier','to deny'],['percevoir','to perceive'],['enregistrer','to record'],['concevoir','to design'],['dépenser','to spend'],['bâtir','to build'],['encourager','to encourage'],['projeter','to project, to plan'],['développer','to develop'],['prolonger','to extend'],['pratiquer','to practice'],['voter','to vote'],['mélanger','to mix'],['garantir','to guarantee'],['calculer','to calculate'],['émerger','to emerge'],['applaudir','to applaud'],['accélérer','to accelerate'],['améliorer','to improve'],['gérer','to manage'],['limiter','to limit'],['modifier','to modify'],['négocier','to negotiate'],['supprimer','to delete'],['corriger','to correct'],['refléter','to reflect'],['exclure','to exclude'],['triompher','to triumph'],['diviser','to divide'],['émettre','to emit'],['adapter','to adapt'],['investir','to invest'],['nuire','to harm'],['progresser','to progress'],['diminuer','to decrease'],['analyser','to analyze'],['résumer','to summarize'],['définir','to define'],['exploiter','to exploit'],['compléter','to complete'],['débuter','to begin'],['prédire','to predict'],['évaluer','to evaluate'],['intégrer','to integrate'],['insérer','to insert'],['persévérer','to persevere']];
 const seenV=new Set(),VRAW=[];
 VERBS.forEach(([v,m])=>{if(!seenV.has(v)){seenV.add(v);VRAW.push([v,m]);}});
 const VERB_MAP={};VRAW.forEach(([v,m])=>{VERB_MAP[v]=m;});
@@ -315,24 +364,33 @@ const ALT_FORMS={
   'essaierais':'essayerais','essaierait':'essayerait',
   'essaierions':'essayerions','essaieriez':'essayeriez','essaieraient':'essayeraient',
 };
+Object.assign(ALT_FORMS,{"essaye":"essaie","essayes":"essaies","essayent":"essaient","essayerai":"essaierai","essayeras":"essaieras","essayera":"essaiera","essayerons":"essaierons","essayerez":"essaierez","essayeront":"essaieront","essayerais":"essaierais","essayerait":"essaierait","essayerions":"essaierions","essayeriez":"essaieriez","essayeraient":"essaieraient","paye":"paie","payes":"paies","payent":"paient","payerai":"paierai","payeras":"paieras","payera":"paiera","payerons":"paierons","payerez":"paierez","payeront":"paieront","payerais":"paierais","payerait":"paierait","payerions":"paierions","payeriez":"paieriez","payeraient":"paieraient","effraye":"effraie","effrayes":"effraies","effrayent":"effraient","effrayerai":"effraierai","effrayeras":"effraieras","effrayera":"effraiera","effrayerons":"effraierons","effrayerez":"effraierez","effrayeront":"effraieront","effrayerais":"effraierais","effrayerait":"effraierait","effrayerions":"effraierions","effrayeriez":"effraieriez","effrayeraient":"effraieraient"}); // every -ayer verb: paie/paye
 Object.entries(ALT_FORMS).forEach(([k,v])=>{if(!ALT_FORMS[v])ALT_FORMS[v]=k;});
 
 function matchesAnswer(input,expected,pIdx,isImp){
-  const ni=normCmp(input),ne=normCmp(expected);
+  const nc=x=>SET.strictAccents?norm(x):normCmp(x);
+  const ni=nc(input),ne=nc(expected);
   if(ni===ne)return true;
   const sq=s=>s.replace(/^que? /,'').trim();
   if(sq(ni)===sq(ne))return true;
-  const pfxs=(isImp?IPFX[pIdx]:(PFX[pIdx]||[])).map(p=>normCmp(p));
+  const pfxs=(isImp?IPFX[pIdx]:(PFX[pIdx]||[])).map(p=>nc(p));
   let bare=sq(ne),inp=sq(ni);
   for(const p of pfxs){if(bare.startsWith(p)){bare=bare.slice(p.length).trim();break;}}
   for(const p of pfxs){if(inp.startsWith(p)){inp=inp.slice(p.length).trim();break;}}
   if(inp===bare)return true;
   const altBare=ALT_FORMS[bare];
-  if(altBare&&inp===normCmp(altBare))return true;
+  if(altBare&&inp===nc(altBare))return true;
   const altInp=ALT_FORMS[inp];
   if(altInp&&altInp===bare)return true;
+  // être-verbs agree with the subject: accept allé / allée / allés / allées
+  const bw=bare.split(' '),iw=inp.split(' ');
+  if(bw.length===2&&iw.length===2&&iw[0]===bw[0]&&ETRE_AUX.has(bw[0])){
+    const stems=[bw[1],bw[1].replace(/s$/,'')];
+    if(stems.some(c=>[c,c+'e',c+'s',c+'es'].includes(iw[1])))return true;
+  }
   return false;
 }
+const ETRE_AUX=new Set(['suis','es','est','sommes','êtes','sont','étais','était','étions','étiez','étaient','sois','soit','soyons','soyez','soient','serais','serait','serions','seriez','seraient'].flatMap(w=>[w,stripAccents(w)]));
 
 // ── CONJUGATION ENGINE ────────────────────────────────────────────────
 const IRR={
@@ -405,7 +463,7 @@ battre:{present:['bats','bats','bat','battons','battez','battent'],imparfait:['b
 envoyer:{present:['envoie','envoies','envoie','envoyons','envoyez','envoient'],imparfait:['envoyais','envoyais','envoyait','envoyions','envoyiez','envoyaient'],futurSimple:['enverrai','enverras','enverra','enverrons','enverrez','enverront'],subjonctifPresent:['envoie','envoies','envoie','envoyions','envoyiez','envoient'],participePre:['envoyant'],imperatif:['envoie','envoyons','envoyez'],pp:'envoyé',aux:'avoir'},
 };
 
-function makeUire(stem,pp){return{present:[stem+'s',stem+'s',stem+'t',stem+'sons',stem+'sez',stem+'sent'],imparfait:[stem+'sais',stem+'sais',stem+'sait',stem+'sions',stem+'siez',stem+'saient'],futurSimple:[stem+'irai',stem+'iras',stem+'ira',stem+'irons',stem+'irez',stem+'iront'],subjonctifPresent:[stem+'se',stem+'ses',stem+'se',stem+'sions',stem+'siez',stem+'sent'],participePre:[stem+'sant'],imperatif:[stem+'s',stem+'sons',stem+'sez'],pp,aux:'avoir'};}
+function makeUire(stem,pp){return{present:[stem+'s',stem+'s',stem+'t',stem+'sons',stem+'sez',stem+'sent'],imparfait:[stem+'sais',stem+'sais',stem+'sait',stem+'sions',stem+'siez',stem+'saient'],futurSimple:[stem+'rai',stem+'ras',stem+'ra',stem+'rons',stem+'rez',stem+'ront'],subjonctifPresent:[stem+'se',stem+'ses',stem+'se',stem+'sions',stem+'siez',stem+'sent'],participePre:[stem+'sant'],imperatif:[stem+'s',stem+'sons',stem+'sez'],pp,aux:'avoir'};}
 IRR.conduire=makeUire('condui','conduit');IRR.construire=makeUire('construi','construit');
 IRR.produire=makeUire('produi','produit');IRR.traduire=makeUire('tradui','traduit');
 IRR.détruire=makeUire('détrui','détruit');IRR.réduire=makeUire('rédui','réduit');
@@ -446,6 +504,10 @@ essayer:{present:['essaie','essaies','essaie','essayons','essayez','essaient'],i
 payer:{present:['paie','paies','paie','payons','payez','paient'],imparfait:['payais','payais','payait','payions','payiez','payaient'],futurSimple:['paierai','paieras','paiera','paierons','paierez','paieront'],subjonctifPresent:['paie','paies','paie','payions','payiez','paient'],participePre:['payant'],imperatif:['paie','payons','payez'],pp:'payé',aux:'avoir'},
 };
 Object.assign(IRR,BOOT);
+// Tables generated from Verbiste and reviewed form by form (see verification notes)
+const VERIFIED={"valoir":{"present":["vaux","vaux","vaut","valons","valez","valent"],"imparfait":["valais","valais","valait","valions","valiez","valaient"],"futurSimple":["vaudrai","vaudras","vaudra","vaudrons","vaudrez","vaudront"],"subjonctifPresent":["vaille","vailles","vaille","valions","valiez","vaillent"],"imperatif":["vaux","valons","valez"],"participePre":["valant"],"pp":"valu","aux":"avoir"},"disparaître":{"present":["disparais","disparais","disparaît","disparaissons","disparaissez","disparaissent"],"imparfait":["disparaissais","disparaissais","disparaissait","disparaissions","disparaissiez","disparaissaient"],"futurSimple":["disparaîtrai","disparaîtras","disparaîtra","disparaîtrons","disparaîtrez","disparaîtront"],"subjonctifPresent":["disparaisse","disparaisses","disparaisse","disparaissions","disparaissiez","disparaissent"],"imperatif":["disparais","disparaissons","disparaissez"],"participePre":["disparaissant"],"pp":"disparu","aux":"avoir"},"découvrir":{"present":["découvre","découvres","découvre","découvrons","découvrez","découvrent"],"imparfait":["découvrais","découvrais","découvrait","découvrions","découvriez","découvraient"],"futurSimple":["découvrirai","découvriras","découvrira","découvrirons","découvrirez","découvriront"],"subjonctifPresent":["découvre","découvres","découvre","découvrions","découvriez","découvrent"],"imperatif":["découvre","découvrons","découvrez"],"participePre":["découvrant"],"pp":"découvert","aux":"avoir"},"revoir":{"present":["revois","revois","revoit","revoyons","revoyez","revoient"],"imparfait":["revoyais","revoyais","revoyait","revoyions","revoyiez","revoyaient"],"futurSimple":["reverrai","reverras","reverra","reverrons","reverrez","reverront"],"subjonctifPresent":["revoie","revoies","revoie","revoyions","revoyiez","revoient"],"imperatif":["revois","revoyons","revoyez"],"participePre":["revoyant"],"pp":"revu","aux":"avoir"},"remonter":{"present":["remonte","remontes","remonte","remontons","remontez","remontent"],"imparfait":["remontais","remontais","remontait","remontions","remontiez","remontaient"],"futurSimple":["remonterai","remonteras","remontera","remonterons","remonterez","remonteront"],"subjonctifPresent":["remonte","remontes","remonte","remontions","remontiez","remontent"],"imperatif":["remonte","remontons","remontez"],"participePre":["remontant"],"pp":"remonté","aux":"être"},"apparaître":{"present":["apparais","apparais","apparaît","apparaissons","apparaissez","apparaissent"],"imparfait":["apparaissais","apparaissais","apparaissait","apparaissions","apparaissiez","apparaissaient"],"futurSimple":["apparaîtrai","apparaîtras","apparaîtra","apparaîtrons","apparaîtrez","apparaîtront"],"subjonctifPresent":["apparaisse","apparaisses","apparaisse","apparaissions","apparaissiez","apparaissent"],"imperatif":["apparais","apparaissons","apparaissez"],"participePre":["apparaissant"],"pp":"apparu","aux":"être"},"prévenir":{"present":["préviens","préviens","prévient","prévenons","prévenez","préviennent"],"imparfait":["prévenais","prévenais","prévenait","prévenions","préveniez","prévenaient"],"futurSimple":["préviendrai","préviendras","préviendra","préviendrons","préviendrez","préviendront"],"subjonctifPresent":["prévienne","préviennes","prévienne","prévenions","préveniez","préviennent"],"imperatif":["préviens","prévenons","prévenez"],"participePre":["prévenant"],"pp":"prévenu","aux":"avoir"},"prévoir":{"present":["prévois","prévois","prévoit","prévoyons","prévoyez","prévoient"],"imparfait":["prévoyais","prévoyais","prévoyait","prévoyions","prévoyiez","prévoyaient"],"futurSimple":["prévoirai","prévoiras","prévoira","prévoirons","prévoirez","prévoiront"],"subjonctifPresent":["prévoie","prévoies","prévoie","prévoyions","prévoyiez","prévoient"],"imperatif":["prévois","prévoyons","prévoyez"],"participePre":["prévoyant"],"pp":"prévu","aux":"avoir"},"ressentir":{"present":["ressens","ressens","ressent","ressentons","ressentez","ressentent"],"imparfait":["ressentais","ressentais","ressentait","ressentions","ressentiez","ressentaient"],"futurSimple":["ressentirai","ressentiras","ressentira","ressentirons","ressentirez","ressentiront"],"subjonctifPresent":["ressente","ressentes","ressente","ressentions","ressentiez","ressentent"],"imperatif":["ressens","ressentons","ressentez"],"participePre":["ressentant"],"pp":"ressenti","aux":"avoir"},"crever":{"present":["crève","crèves","crève","crevons","crevez","crèvent"],"imparfait":["crevais","crevais","crevait","crevions","creviez","crevaient"],"futurSimple":["crèverai","crèveras","crèvera","crèverons","crèverez","crèveront"],"subjonctifPresent":["crève","crèves","crève","crevions","creviez","crèvent"],"imperatif":["crève","crevons","crevez"],"participePre":["crevant"],"pp":"crevé","aux":"avoir"},"repartir":{"present":["repars","repars","repart","repartons","repartez","repartent"],"imparfait":["repartais","repartais","repartait","repartions","repartiez","repartaient"],"futurSimple":["repartirai","repartiras","repartira","repartirons","repartirez","repartiront"],"subjonctifPresent":["reparte","repartes","reparte","repartions","repartiez","repartent"],"imperatif":["repars","repartons","repartez"],"participePre":["repartant"],"pp":"reparti","aux":"être"},"régler":{"present":["règle","règles","règle","réglons","réglez","règlent"],"imparfait":["réglais","réglais","réglait","réglions","régliez","réglaient"],"futurSimple":["réglerai","régleras","réglera","réglerons","réglerez","régleront"],"subjonctifPresent":["règle","règles","règle","réglions","régliez","règlent"],"imperatif":["règle","réglons","réglez"],"participePre":["réglant"],"pp":"réglé","aux":"avoir"},"soulever":{"present":["soulève","soulèves","soulève","soulevons","soulevez","soulèvent"],"imparfait":["soulevais","soulevais","soulevait","soulevions","souleviez","soulevaient"],"futurSimple":["soulèverai","soulèveras","soulèvera","soulèverons","soulèverez","soulèveront"],"subjonctifPresent":["soulève","soulèves","soulève","soulevions","souleviez","soulèvent"],"imperatif":["soulève","soulevons","soulevez"],"participePre":["soulevant"],"pp":"soulevé","aux":"avoir"},"promener":{"present":["promène","promènes","promène","promenons","promenez","promènent"],"imparfait":["promenais","promenais","promenait","promenions","promeniez","promenaient"],"futurSimple":["promènerai","promèneras","promènera","promènerons","promènerez","promèneront"],"subjonctifPresent":["promène","promènes","promène","promenions","promeniez","promènent"],"imperatif":["promène","promenons","promenez"],"participePre":["promenant"],"pp":"promené","aux":"avoir"},"plaindre":{"present":["plains","plains","plaint","plaignons","plaignez","plaignent"],"imparfait":["plaignais","plaignais","plaignait","plaignions","plaigniez","plaignaient"],"futurSimple":["plaindrai","plaindras","plaindra","plaindrons","plaindrez","plaindront"],"subjonctifPresent":["plaigne","plaignes","plaigne","plaignions","plaigniez","plaignent"],"imperatif":["plains","plaignons","plaignez"],"participePre":["plaignant"],"pp":"plaint","aux":"avoir"},"ennuyer":{"present":["ennuie","ennuies","ennuie","ennuyons","ennuyez","ennuient"],"imparfait":["ennuyais","ennuyais","ennuyait","ennuyions","ennuyiez","ennuyaient"],"futurSimple":["ennuierai","ennuieras","ennuiera","ennuierons","ennuierez","ennuieront"],"subjonctifPresent":["ennuie","ennuies","ennuie","ennuyions","ennuyiez","ennuient"],"imperatif":["ennuie","ennuyons","ennuyez"],"participePre":["ennuyant"],"pp":"ennuyé","aux":"avoir"},"endormir":{"present":["endors","endors","endort","endormons","endormez","endorment"],"imparfait":["endormais","endormais","endormait","endormions","endormiez","endormaient"],"futurSimple":["endormirai","endormiras","endormira","endormirons","endormirez","endormiront"],"subjonctifPresent":["endorme","endormes","endorme","endormions","endormiez","endorment"],"imperatif":["endors","endormons","endormez"],"participePre":["endormant"],"pp":"endormi","aux":"avoir"},"convenir":{"present":["conviens","conviens","convient","convenons","convenez","conviennent"],"imparfait":["convenais","convenais","convenait","convenions","conveniez","convenaient"],"futurSimple":["conviendrai","conviendras","conviendra","conviendrons","conviendrez","conviendront"],"subjonctifPresent":["convienne","conviennes","convienne","convenions","conveniez","conviennent"],"imperatif":["conviens","convenons","convenez"],"participePre":["convenant"],"pp":"convenu","aux":"avoir"},"récupérer":{"present":["récupère","récupères","récupère","récupérons","récupérez","récupèrent"],"imparfait":["récupérais","récupérais","récupérait","récupérions","récupériez","récupéraient"],"futurSimple":["récupérerai","récupéreras","récupérera","récupérerons","récupérerez","récupéreront"],"subjonctifPresent":["récupère","récupères","récupère","récupérions","récupériez","récupèrent"],"imperatif":["récupère","récupérons","récupérez"],"participePre":["récupérant"],"pp":"récupéré","aux":"avoir"},"pénétrer":{"present":["pénètre","pénètres","pénètre","pénétrons","pénétrez","pénètrent"],"imparfait":["pénétrais","pénétrais","pénétrait","pénétrions","pénétriez","pénétraient"],"futurSimple":["pénétrerai","pénétreras","pénétrera","pénétrerons","pénétrerez","pénétreront"],"subjonctifPresent":["pénètre","pénètres","pénètre","pénétrions","pénétriez","pénètrent"],"imperatif":["pénètre","pénétrons","pénétrez"],"participePre":["pénétrant"],"pp":"pénétré","aux":"avoir"},"convaincre":{"present":["convaincs","convaincs","convainc","convainquons","convainquez","convainquent"],"imparfait":["convainquais","convainquais","convainquait","convainquions","convainquiez","convainquaient"],"futurSimple":["convaincrai","convaincras","convaincra","convaincrons","convaincrez","convaincront"],"subjonctifPresent":["convainque","convainques","convainque","convainquions","convainquiez","convainquent"],"imperatif":["convaincs","convainquons","convainquez"],"participePre":["convainquant"],"pp":"convaincu","aux":"avoir"},"renvoyer":{"present":["renvoie","renvoies","renvoie","renvoyons","renvoyez","renvoient"],"imparfait":["renvoyais","renvoyais","renvoyait","renvoyions","renvoyiez","renvoyaient"],"futurSimple":["renverrai","renverras","renverra","renverrons","renverrez","renverront"],"subjonctifPresent":["renvoie","renvoies","renvoie","renvoyions","renvoyiez","renvoient"],"imperatif":["renvoie","renvoyons","renvoyez"],"participePre":["renvoyant"],"pp":"renvoyé","aux":"avoir"},"refaire":{"present":["refais","refais","refait","refaisons","refaites","refont"],"imparfait":["refaisais","refaisais","refaisait","refaisions","refaisiez","refaisaient"],"futurSimple":["referai","referas","refera","referons","referez","referont"],"subjonctifPresent":["refasse","refasses","refasse","refassions","refassiez","refassent"],"imperatif":["refais","refaisons","refaites"],"participePre":["refaisant"],"pp":"refait","aux":"avoir"},"interrompre":{"present":["interromps","interromps","interrompt","interrompons","interrompez","interrompent"],"imparfait":["interrompais","interrompais","interrompait","interrompions","interrompiez","interrompaient"],"futurSimple":["interromprai","interrompras","interrompra","interromprons","interromprez","interrompront"],"subjonctifPresent":["interrompe","interrompes","interrompe","interrompions","interrompiez","interrompent"],"imperatif":["interromps","interrompons","interrompez"],"participePre":["interrompant"],"pp":"interrompu","aux":"avoir"},"survivre":{"present":["survis","survis","survit","survivons","survivez","survivent"],"imparfait":["survivais","survivais","survivait","survivions","surviviez","survivaient"],"futurSimple":["survivrai","survivras","survivra","survivrons","survivrez","survivront"],"subjonctifPresent":["survive","survives","survive","survivions","surviviez","survivent"],"imperatif":["survis","survivons","survivez"],"participePre":["survivant"],"pp":"survécu","aux":"avoir"},"haïr":{"present":["hais","hais","hait","haïssons","haïssez","haïssent"],"imparfait":["haïssais","haïssais","haïssait","haïssions","haïssiez","haïssaient"],"futurSimple":["haïrai","haïras","haïra","haïrons","haïrez","haïront"],"subjonctifPresent":["haïsse","haïsses","haïsse","haïssions","haïssiez","haïssent"],"imperatif":["hais","haïssons","haïssez"],"participePre":["haïssant"],"pp":"haï","aux":"avoir"},"recouvrir":{"present":["recouvre","recouvres","recouvre","recouvrons","recouvrez","recouvrent"],"imparfait":["recouvrais","recouvrais","recouvrait","recouvrions","recouvriez","recouvraient"],"futurSimple":["recouvrirai","recouvriras","recouvrira","recouvrirons","recouvrirez","recouvriront"],"subjonctifPresent":["recouvre","recouvres","recouvre","recouvrions","recouvriez","recouvrent"],"imperatif":["recouvre","recouvrons","recouvrez"],"participePre":["recouvrant"],"pp":"recouvert","aux":"avoir"},"combattre":{"present":["combats","combats","combat","combattons","combattez","combattent"],"imparfait":["combattais","combattais","combattait","combattions","combattiez","combattaient"],"futurSimple":["combattrai","combattras","combattra","combattrons","combattrez","combattront"],"subjonctifPresent":["combatte","combattes","combatte","combattions","combattiez","combattent"],"imperatif":["combats","combattons","combattez"],"participePre":["combattant"],"pp":"combattu","aux":"avoir"},"parcourir":{"present":["parcours","parcours","parcourt","parcourons","parcourez","parcourent"],"imparfait":["parcourais","parcourais","parcourait","parcourions","parcouriez","parcouraient"],"futurSimple":["parcourrai","parcourras","parcourra","parcourrons","parcourrez","parcourront"],"subjonctifPresent":["parcoure","parcoures","parcoure","parcourions","parcouriez","parcourent"],"imperatif":["parcours","parcourons","parcourez"],"participePre":["parcourant"],"pp":"parcouru","aux":"avoir"},"vêtir":{"present":["vêts","vêts","vêt","vêtons","vêtez","vêtent"],"imparfait":["vêtais","vêtais","vêtait","vêtions","vêtiez","vêtaient"],"futurSimple":["vêtirai","vêtiras","vêtira","vêtirons","vêtirez","vêtiront"],"subjonctifPresent":["vête","vêtes","vête","vêtions","vêtiez","vêtent"],"imperatif":["vêts","vêtons","vêtez"],"participePre":["vêtant"],"pp":"vêtu","aux":"avoir"},"régner":{"present":["règne","règnes","règne","régnons","régnez","règnent"],"imparfait":["régnais","régnais","régnait","régnions","régniez","régnaient"],"futurSimple":["régnerai","régneras","régnera","régnerons","régnerez","régneront"],"subjonctifPresent":["règne","règnes","règne","régnions","régniez","règnent"],"imperatif":["règne","régnons","régnez"],"participePre":["régnant"],"pp":"régné","aux":"avoir"},"retomber":{"present":["retombe","retombes","retombe","retombons","retombez","retombent"],"imparfait":["retombais","retombais","retombait","retombions","retombiez","retombaient"],"futurSimple":["retomberai","retomberas","retombera","retomberons","retomberez","retomberont"],"subjonctifPresent":["retombe","retombes","retombe","retombions","retombiez","retombent"],"imperatif":["retombe","retombons","retombez"],"participePre":["retombant"],"pp":"retombé","aux":"être"},"inscrire":{"present":["inscris","inscris","inscrit","inscrivons","inscrivez","inscrivent"],"imparfait":["inscrivais","inscrivais","inscrivait","inscrivions","inscriviez","inscrivaient"],"futurSimple":["inscrirai","inscriras","inscrira","inscrirons","inscrirez","inscriront"],"subjonctifPresent":["inscrive","inscrives","inscrive","inscrivions","inscriviez","inscrivent"],"imperatif":["inscris","inscrivons","inscrivez"],"participePre":["inscrivant"],"pp":"inscrit","aux":"avoir"},"essuyer":{"present":["essuie","essuies","essuie","essuyons","essuyez","essuient"],"imparfait":["essuyais","essuyais","essuyait","essuyions","essuyiez","essuyaient"],"futurSimple":["essuierai","essuieras","essuiera","essuierons","essuierez","essuieront"],"subjonctifPresent":["essuie","essuies","essuie","essuyions","essuyiez","essuient"],"imperatif":["essuie","essuyons","essuyez"],"participePre":["essuyant"],"pp":"essuyé","aux":"avoir"},"noyer":{"present":["noie","noies","noie","noyons","noyez","noient"],"imparfait":["noyais","noyais","noyait","noyions","noyiez","noyaient"],"futurSimple":["noierai","noieras","noiera","noierons","noierez","noieront"],"subjonctifPresent":["noie","noies","noie","noyions","noyiez","noient"],"imperatif":["noie","noyons","noyez"],"participePre":["noyant"],"pp":"noyé","aux":"avoir"},"employer":{"present":["emploie","emploies","emploie","employons","employez","emploient"],"imparfait":["employais","employais","employait","employions","employiez","employaient"],"futurSimple":["emploierai","emploieras","emploiera","emploierons","emploierez","emploieront"],"subjonctifPresent":["emploie","emploies","emploie","employions","employiez","emploient"],"imperatif":["emploie","employons","employez"],"participePre":["employant"],"pp":"employé","aux":"avoir"}};
+Object.assign(IRR,VERIFIED);
+Object.assign(ALT_FORMS,{"réglerai":"règlerai","régleras":"règleras","réglera":"règlera","réglerons":"règlerons","réglerez":"règlerez","régleront":"règleront","récupérerai":"récupèrerai","récupéreras":"récupèreras","récupérera":"récupèrera","récupérerons":"récupèrerons","récupérerez":"récupèrerez","récupéreront":"récupèreront","pénétrerai":"pénètrerai","pénétreras":"pénètreras","pénétrera":"pénètrera","pénétrerons":"pénètrerons","pénétrerez":"pénètrerez","pénétreront":"pénètreront","régnerai":"règnerai","régneras":"règneras","régnera":"règnera","régnerons":"règnerons","régnerez":"règnerez","régneront":"règneront","protégerai":"protègerai","protégeras":"protègeras","protégera":"protègera","protégerons":"protègerons","protégerez":"protègerez","protégeront":"protègeront","protégerais":"protègerais","protégerait":"protègerait","protégerions":"protègerions","protégeriez":"protègeriez","protégeraient":"protègeraient","réglerais":"règlerais","réglerait":"règlerait","réglerions":"règlerions","régleriez":"règleriez","régleraient":"règleraient","récupérerais":"récupèrerais","récupérerait":"récupèrerait","récupérerions":"récupèrerions","récupéreriez":"récupèreriez","récupéreraient":"récupèreraient","pénétrerais":"pénètrerais","pénétrerait":"pénètrerait","pénétrerions":"pénètrerions","pénétreriez":"pénètreriez","pénétreraient":"pénètreraient","régnerais":"règnerais","régnerait":"règnerait","régnerions":"règnerions","régneriez":"règneriez","régneraient":"règneraient"});Object.entries(ALT_FORMS).forEach(([k,v])=>{if(!ALT_FORMS[v])ALT_FORMS[v]=k;});
 
 [['revenir','venir','revenu','être'],['devenir','venir','devenu','être'],['intervenir','venir','intervenu','être'],['parvenir','venir','parvenu','être'],['prévenir','venir','prévenu',null],['convenir','venir','convenu',null],['obtenir','tenir','obtenu',null],['appartenir','tenir','appartenu',null],['maintenir','tenir','maintenu',null],['retenir','tenir','retenu',null],['contenir','tenir','contenu',null],['entretenir','tenir','entretenu',null],['soutenir','tenir','soutenu',null],['apprendre','prendre','appris',null],['comprendre','prendre','compris',null],['reprendre','prendre','repris',null],['surprendre','prendre','surpris',null],['remettre','mettre','remis',null],['promettre','mettre','promis',null],['permettre','mettre','permis',null],['commettre','mettre','commis',null],['soumettre','mettre','soumis',null],['émettre','mettre','émis',null],['reconnaître','connaître','reconnu',null],['rejoindre','joindre','rejoint',null],['satisfaire','faire','satisfait',null],['abattre','battre','abattu',null],['reconstruire','construire','reconstruit',null],['poursuivre','suivre','poursuivi',null],].forEach(([verb,base,pp,auxOvr])=>{
   if(IRR[verb])return;const src=IRR[base];if(!src)return;
@@ -462,23 +524,33 @@ function regConj(v){
   const pp=er?s+'é':ir?s+'i':s+'u';
   const eList=['partir','sortir','venir','revenir','devenir','aller','mourir','naître','arriver','tomber','rester','entrer','rentrer','retourner','monter','descendre','passer','intervenir','parvenir'];
   const aux=eList.includes(v)?'être':'avoir';
-  if(er){const g=v.endsWith('ger')?s+'e':v.endsWith('cer')?s.slice(0,-1)+'ç':s;const cs=v.endsWith('cer')?s.slice(0,-1)+'ç':s;return{present:[es('je')+'e',es('tu')+'es',es('il')+'e',g+'ons',s+'ez',es('ils')+'ent'],imparfait:[cs+'ais',cs+'ais',cs+'ait',s+'ions',s+'iez',cs+'aient'],futurSimple:[v+'ai',v+'as',v+'a',v+'ons',v+'ez',v+'ont'],subjonctifPresent:[es('je')+'e',es('tu')+'es',es('il')+'e',s+'ions',s+'iez',es('ils')+'ent'],participePre:[g+'ant'],imperatif:[es('tu')+'e',g+'ons',s+'ez'],pp,aux};}
+  if(er){const g=v.endsWith('ger')?s+'e':v.endsWith('cer')?s.slice(0,-1)+'ç':s;const cs=v.endsWith('cer')?s.slice(0,-1)+'ç':v.endsWith('ger')?s+'e':s;return{present:[es('je')+'e',es('tu')+'es',es('il')+'e',g+'ons',s+'ez',es('ils')+'ent'],imparfait:[cs+'ais',cs+'ais',cs+'ait',s+'ions',s+'iez',cs+'aient'],futurSimple:[v+'ai',v+'as',v+'a',v+'ons',v+'ez',v+'ont'],subjonctifPresent:[es('je')+'e',es('tu')+'es',es('il')+'e',s+'ions',s+'iez',es('ils')+'ent'],participePre:[g+'ant'],imperatif:[es('tu')+'e',g+'ons',s+'ez'],pp,aux};}
   if(ir){return{present:[s+'is',s+'is',s+'it',s+'issons',s+'issez',s+'issent'],imparfait:[s+'issais',s+'issais',s+'issait',s+'issions',s+'issiez',s+'issaient'],futurSimple:[v+'ai',v+'as',v+'a',v+'ons',v+'ez',v+'ont'],subjonctifPresent:[s+'isse',s+'isses',s+'isse',s+'issions',s+'issiez',s+'issent'],participePre:[s+'issant'],imperatif:[s+'is',s+'issons',s+'issez'],pp,aux};}
   const fs=v.slice(0,-1);
-  return{present:[s+'s',s+'s',s+'',s+'ons',s+'ez',s+'ent'],imparfait:[s+'ais',s+'ais',s+'ait',s+'ions',s+'iez',s+'aient'],futurSimple:[fs+'rai',fs+'ras',fs+'ra',fs+'rons',fs+'rez',fs+'ront'],subjonctifPresent:[s+'e',s+'es',s+'e',s+'ions',s+'iez',s+'ent'],participePre:[s+'ant'],imperatif:[s+'s',s+'ons',s+'ez'],pp,aux};
+  return{present:[s+'s',s+'s',s+'',s+'ons',s+'ez',s+'ent'],imparfait:[s+'ais',s+'ais',s+'ait',s+'ions',s+'iez',s+'aient'],futurSimple:[fs+'ai',fs+'as',fs+'a',fs+'ons',fs+'ez',fs+'ont'],subjonctifPresent:[s+'e',s+'es',s+'e',s+'ions',s+'iez',s+'ent'],participePre:[s+'ant'],imperatif:[s+'s',s+'ons',s+'ez'],pp,aux};
 }
 function conj(v,t){
   const d=IRR[v]||regConj(v);
   const aE=['suis','es','est','sommes','êtes','sont'],aA=['ai','as','a','avons','avez','ont'];
+  const ppAt=i=>d.aux==='être'&&i>=3&&!/[sx]$/.test(d.pp)?d.pp+'s':d.pp;
   const aArr=d.aux==='être'?aE:aA,aImp=d.aux==='être'?['étais','étais','était','étions','étiez','étaient']:['avais','avais','avait','avions','aviez','avaient'],sAux=d.aux==='être'?['sois','sois','soit','soyons','soyez','soient']:['aie','aies','ait','ayons','ayez','aient'];
-  switch(t){case 'present':return d.present;case 'imparfait':return d.imparfait;case 'passeCompose':return aArr.map(a=>a+' '+d.pp);case 'futurSimple':return d.futurSimple;case 'plusQueParfait':return aImp.map(a=>a+' '+d.pp);case 'subjonctifPresent':return d.subjonctifPresent.map(f=>'que '+f);case 'subjonctifPasse':return sAux.map(a=>'que '+a+' '+d.pp);case 'conditionnelPresent':{const cs=d.futurSimple[0].slice(0,-2);return[cs+'ais',cs+'ais',cs+'ait',cs+'ions',cs+'iez',cs+'aient'];}case 'conditionnelPasse':{const cs=d.futurSimple[0].slice(0,-2);const ca=d.aux==='être'?['serais','serais','serait','serions','seriez','seraient']:['aurais','aurais','aurait','aurions','auriez','auraient'];return ca.map(a=>a+' '+d.pp);}case 'imperatif':{const i=d.imperatif;return['—',i[0]||'—','—',i[1]||'—',i[2]||'—','—'];}case 'participePre':return Array(6).fill(d.participePre[0]||'');default:return Array(6).fill('');}
+  switch(t){case 'present':return d.present;case 'imparfait':return d.imparfait;case 'passeCompose':return aArr.map((a,i)=>a+' '+ppAt(i));case 'futurSimple':return d.futurSimple;case 'plusQueParfait':return aImp.map((a,i)=>a+' '+ppAt(i));case 'subjonctifPresent':return d.subjonctifPresent.map(f=>'que '+f);case 'subjonctifPasse':return sAux.map((a,i)=>'que '+a+' '+ppAt(i));case 'conditionnelPresent':{const cs=d.futurSimple[0].slice(0,-2);return[cs+'ais',cs+'ais',cs+'ait',cs+'ions',cs+'iez',cs+'aient'];}case 'conditionnelPasse':{const cs=d.futurSimple[0].slice(0,-2);const ca=d.aux==='être'?['serais','serais','serait','serions','seriez','seraient']:['aurais','aurais','aurait','aurions','auriez','auraient'];return ca.map((a,i)=>a+' '+ppAt(i));}case 'imperatif':{const i=d.imperatif;return['—',i[0]||'—','—',i[1]||'—',i[2]||'—','—'];}case 'participePre':return Array(6).fill(d.participePre[0]||'');default:return Array(6).fill('');}
 }
 
 function enBase(en){return en.replace(/^to /,'').split(',')[0].trim();}
-function enGerund(en){const b=enBase(en);return(b.endsWith('e')&&!b.endsWith('ee'))?b.slice(0,-1)+'ing':b+'ing';}
-function enPP(en){const b=enBase(en);const m={be:'been',have:'had',go:'gone',do:'done',take:'taken',make:'made',say:'said',see:'seen',know:'known',come:'come',give:'given',find:'found',think:'thought',tell:'told',put:'put',leave:'left',live:'lived',run:'run',die:'died',read:'read',write:'written',drink:'drunk',win:'won',sell:'sold',lose:'lost',build:'built',send:'sent',hear:'heard',hold:'held',keep:'kept',meet:'met',feel:'felt',fall:'fallen',drive:'driven',sleep:'slept',choose:'chosen',beat:'beaten',flee:'fled',burn:'burned',hit:'hit',throw:'thrown',pay:'paid',fly:'flown',steal:'stolen'};if(m[b])return m[b];if(b.endsWith('e'))return b.slice(0,-1)+'ed';if(b.endsWith('y')&&!'aeiou'.includes(b[b.length-2]))return b.slice(0,-1)+'ied';return b+'ed';}
+// English helpers for the hint line. Irregular past participles and consonant-doubling verbs are listed explicitly.
+const EN_PP={be:'been',bear:'borne',beat:'beaten',become:'become',begin:'begun',bet:'bet',bite:'bitten',blow:'blown',break:'broken',bring:'brought',build:'built',burst:'burst',buy:'bought',catch:'caught',choose:'chosen',come:'come',cost:'cost',cut:'cut',dig:'dug',do:'done',draw:'drawn',drink:'drunk',drive:'driven',eat:'eaten',fall:'fallen',feed:'fed',feel:'felt',fight:'fought',find:'found',flee:'fled',fly:'flown',forbid:'forbidden',foresee:'foreseen',forget:'forgotten',forgive:'forgiven',give:'given',go:'gone',grow:'grown',hang:'hung',have:'had',hear:'heard',hide:'hidden',hit:'hit',hold:'held',hurt:'hurt',keep:'kept',know:'known',lead:'led',leave:'left',lend:'lent',let:'let',light:'lit',lose:'lost',make:'made',mean:'meant',meet:'met',pay:'paid',put:'put',read:'read',ring:'rung',run:'run',say:'said',see:'seen',sell:'sold',send:'sent',set:'set',shake:'shaken',shine:'shone',show:'shown',sing:'sung',sleep:'slept',speak:'spoken',spend:'spent',spin:'spun',spit:'spat',spread:'spread',stick:'stuck',sting:'stung',swear:'sworn',swim:'swum',swing:'swung',take:'taken',teach:'taught',tear:'torn',tell:'told',think:'thought',throw:'thrown',undergo:'undergone',understand:'understood',redo:'redone',wake:'woken',win:'won',withdraw:'withdrawn',write:'written'};
+const EN_DBL=new Set(['admit','beg','commit','control','drag','drop','emit','prefer','regret','slam','slip','step','stir','stop','submit']);
+const EN_DBL_ING=new Set([...EN_DBL,'begin','bet','cut','dig','forbid','forget','hit','let','put','run','set','spin','spit','swim','win']);
+function enSplit(b){const i=b.indexOf(' ');return i<0?[b,'']:[b.slice(0,i),b.slice(i)];}
+function en3s(w){if(w==='have')return'has';if(/(s|sh|ch|x|z|o)$/.test(w))return w+'es';if(/[^aeiou]y$/.test(w))return w.slice(0,-1)+'ies';return w+'s';}
+function enPPw(w){if(EN_PP[w])return EN_PP[w];if(EN_DBL.has(w))return w+w.slice(-1)+'ed';if(w.endsWith('e'))return w+'d';if(/[^aeiou]y$/.test(w))return w.slice(0,-1)+'ied';return w+'ed';}
+function enIngW(w){if(/ie$/.test(w))return w.slice(0,-2)+'ying';if(EN_DBL_ING.has(w))return w+w.slice(-1)+'ing';if(/[^e]e$/.test(w)&&w!=='be')return w.slice(0,-1)+'ing';return w+'ing';}
+function enGerund(en){const[h,r]=enSplit(enBase(en));return enIngW(h)+r;}
+function enPP(en){const[h,r]=enSplit(enBase(en));return enPPw(h)+r;}
 function enHave(p){return['I','you','we','they','you (pl.)'].includes(p)?'have':'has';}
-function enPres(en,p){const b=enBase(en);const t=p==='he/she';if(b==='be')return t?'is':p==='I'?'am':'are';if(b==='have')return t?'has':'have';if(!t)return b;if(['go','do'].includes(b))return b+'es';if(b.endsWith('y')&&!'aeiou'.includes(b[b.length-2]))return b.slice(0,-1)+'ies';return b+'s';}
+const THIRD_SG=['he/she','he','she','one'];
+function enPres(en,p){const[h,r]=enSplit(enBase(en));const t=THIRD_SG.includes(p);if(h==='be')return(t?'is':p==='I'?'am':'are')+r;return(t?en3s(h):h)+r;}
 function buildHint(verb,tk,pEN){const en=VERB_MAP[verb]||('to '+verb),b=enBase(en);switch(tk){case 'present':return`${pEN} ${enPres(en,pEN)}`;case 'imparfait':return`${pEN} was/used to ${b}`;case 'passeCompose':return`${pEN} ${enHave(pEN)} ${enPP(en)}`;case 'futurSimple':return`${pEN} will ${b}`;case 'plusQueParfait':return`${pEN} had ${enPP(en)}`;case 'subjonctifPresent':return`(that) ${pEN} ${b}`;case 'subjonctifPasse':return`(that) ${pEN} had ${enPP(en)}`;case 'conditionnelPresent':return`${pEN} would ${b}`;case 'conditionnelPasse':return`${pEN} would have ${enPP(en)}`;case 'imperatif':return`${b.charAt(0).toUpperCase()+b.slice(1)}! (${pEN})`;case 'participePre':return enGerund(en);default:return'';}}
 
 // ── TENSE FILTER ──────────────────────────────────────────────────────
@@ -491,19 +563,20 @@ function buildTenseChips(){
   M2_TENSES.forEach(t=>{const c=document.createElement('button');c.className='tense-chip';c.dataset.key=t.key;c.textContent=t.label;applyChip(c,activeTenses&&activeTenses.has(t.key));c.onclick=()=>toggleTense(t.key);wrap.appendChild(c);});
 }
 function toggleTense(key){if(!activeTenses)activeTenses=new Set();if(activeTenses.has(key))activeTenses.delete(key);else activeTenses.add(key);if(!activeTenses.size)activeTenses=null;refreshChips();}
-function refreshChips(){document.querySelectorAll('.tense-chip').forEach(c=>{applyChip(c,c.dataset.type==='all'?activeTenses===null:activeTenses&&activeTenses.has(c.dataset.key));});updateSrsBadge();syncTenseUI();}
+function refreshChips(){if(SET.rememberTenses){SET.savedTenses=activeTenses?[...activeTenses]:null;saveSet();}document.querySelectorAll('.tense-chip').forEach(c=>{applyChip(c,c.dataset.type==='all'?activeTenses===null:activeTenses&&activeTenses.has(c.dataset.key));});updateSrsBadge();syncTenseUI();}
 
 // ── SRS ───────────────────────────────────────────────────────────────
 const FREQ_K=0.003;
+function poolVerbs(){return SET.pool?VRAW.slice(0,SET.pool):VRAW;}
 function freqW(i){return Math.exp(-i*FREQ_K);}
 const TENSE_FREQ={present:5,passeCompose:4,imparfait:4,futurSimple:3,conditionnelPresent:3,subjonctifPresent:3,imperatif:2,plusQueParfait:2,conditionnelPasse:2,subjonctifPasse:2};
 function perfW(c,t){if(!t)return 1;return 0.2+2.8*(1-(c+3)/(t+5));}
 function getWeightedPick(){
   const tot=Object.values(tenseData).reduce((a,d)=>a+d.total,0);const blend=Math.min(1,tot/200);
   const pool=activeTenses?M2_TENSES.filter(t=>activeTenses.has(t.key)):M2_TENSES;if(!pool.length)return getWeightedPick();
-  const vW=VRAW.map(([v],i)=>{const fw=freqW(i);const vd=verbData[v]||{};const ap=pool.reduce((a,t)=>{const td=vd[t.key]||{total:0,correct:0};return a+perfW(td.correct,td.total);},0)/pool.length;return fw*(1-blend)+ap*blend*fw;});
+  const PV=poolVerbs();const vW=PV.map(([v],i)=>{const fw=freqW(i);const vd=verbData[v]||{};const ap=pool.reduce((a,t)=>{const td=vd[t.key]||{total:0,correct:0};return a+perfW(td.correct,td.total);},0)/pool.length;return fw*(1-blend)+ap*blend*fw;});
   const vT=vW.reduce((a,b)=>a+b,0);let vR=Math.random()*vT,vI=0;for(let i=0;i<vW.length;i++){vR-=vW[i];if(vR<=0){vI=i;break;}}
-  const verb=VRAW[vI][0];let tense;
+  const verb=PV[vI][0];let tense;
   if(activeTenses){tense=pool[Math.floor(Math.random()*pool.length)];}
   else{const vd=verbData[verb]||{};const tW=pool.map(t=>{const tf=TENSE_FREQ[t.key]||2;const td=vd[t.key]||{total:0,correct:0};return tf*(1-blend)+perfW(td.correct,td.total)*blend*tf;});const tT=tW.reduce((a,b)=>a+b,0);let tR=Math.random()*tT,tI=0;for(let i=0;i<tW.length;i++){tR-=tW[i];if(tR<=0){tI=i;break;}}tense=pool[tI];}
   return{verb,tense};
@@ -523,22 +596,13 @@ function updateSrsBadge(){
 }
 
 // ── STATS ─────────────────────────────────────────────────────────────
-function openStats(){document.getElementById('stats-overlay').style.display='block';renderStatsContent();renderSettings();}
+function openStats(){document.getElementById('stats-overlay').style.display='block';renderStatsContent();renderBackup();}
 function attr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
-function renderSettings(){
-  const el=document.getElementById('settings-content');if(!el)return;
-  const rates=[[0.75,'Slower'],[0.88,'A little slower'],[1,'Normal'],[1.1,'A little faster']];
-  const voiceHTML=frVoices.length
-    ?`<div class="set-row"><label for="voice-sel">Voice</label><select id="voice-sel">${frVoices.map(v=>`<option value="${attr(v.voiceURI)}"${frVoice&&v.voiceURI===frVoice.voiceURI?' selected':''}>${attr(voiceLabel(v))}</option>`).join('')}</select></div>`
-    :`<p class="set-note">No French voice found on this device yet — audio will use the system default.</p>`;
+function renderBackup(){
+  const el=document.getElementById('backup-content');if(!el)return;
   const canFile=!!(navigator.canShare&&window.File);
-  el.innerHTML=`<div class="section-title">Pronunciation</div>${voiceHTML}
-  <p class="set-note" style="margin-bottom:8px;">${window.speechSynthesis?(frVoices.length?`${frVoices.length} French voice${frVoices.length===1?'':'s'} found · using ${attr(voiceLabel(frVoice))}`:'Speech is available but no French voice was found.'):'This browser has no speech support.'}</p>
-  <div class="btn-row" style="margin:0 0 10px;"><button class="btn sm" id="sp-test">🔊 Test sound</button></div>
-  <div class="set-row"><label for="rate-sel">Speed</label><select id="rate-sel">${rates.map(([v,t])=>`<option value="${v}"${(SET.rate||0.88)==v?' selected':''}>${t}</option>`).join('')}</select></div>
-  <p class="set-note">For a more natural voice, download an Enhanced or Premium French voice: iPhone Settings → Accessibility → Spoken Content → Voices → French. Then reopen the app.</p>
-  <div class="section-title">Backup</div>
-  <p style="font-size:13px;color:var(--text2);">Your history is stored on this device only. Save a backup now and then so you can restore it or move to a new phone.</p>
+  el.innerHTML=`<div class="section-title">Backup</div>
+  <p style="font-size:14px;color:var(--text2);">Your history is stored on this device only. Save a backup now and then so you can restore it or move to a new phone.</p>
   <div class="btn-row" style="margin-top:0.75rem;">
     <button class="btn sm" id="bk-copy">Copy backup</button>
     ${canFile?'<button class="btn sm" id="bk-save">Save backup file</button>':''}
@@ -549,14 +613,75 @@ function renderSettings(){
   <input type="file" id="bk-file" accept=".json,application/json,text/plain" hidden>
   <div id="bk-msg" role="status"></div>`;
   const msg=document.getElementById('bk-msg'),ta=document.getElementById('bk-text');
-  const vs=document.getElementById('voice-sel');if(vs)vs.onchange=()=>{SET.voice=vs.value;saveSet();initVoice();speak('Bonjour, je parle français');};
-  document.getElementById('sp-test').onclick=e=>speak('Bonjour, je parle français',e.currentTarget);
-  const rs=document.getElementById('rate-sel');rs.onchange=()=>{SET.rate=+rs.value;saveSet();speak('Bonjour, je parle français');};
   document.getElementById('bk-copy').onclick=async()=>{const t=backupText();try{await navigator.clipboard.writeText(t);msg.textContent='Backup copied. Paste it into Notes or anywhere safe.';}catch(e){ta.value=t;ta.select();msg.textContent='Copy this text and keep it somewhere safe.';}};
   const sv=document.getElementById('bk-save');if(sv)sv.onclick=async()=>{try{const f=new File([backupText()],'verbes-backup-'+todayStr()+'.json',{type:'application/json'});if(!navigator.canShare({files:[f]}))throw 0;await navigator.share({files:[f]});msg.textContent='Backup saved.';}catch(e){if(!e||e.name!=='AbortError')msg.textContent="Saving a file isn't available here. Use Copy backup instead.";}};
   const fi=document.getElementById('bk-file');fi.onchange=async()=>{if(fi.files[0])msg.textContent=restoreBackup(await fi.files[0].text());fi.value='';};
   document.getElementById('bk-open').onclick=()=>fi.click();
   document.getElementById('bk-paste').onclick=()=>{msg.textContent=restoreBackup(ta.value);};
+}
+
+// ── SETTINGS PAGE ─────────────────────────────────────────────────────
+let settingsDirty=false;
+function openSettings(){document.getElementById('settings-overlay').style.display='block';renderSettingsPage();}
+function closeSettings(){
+  document.getElementById('settings-overlay').style.display='none';
+  if(settingsDirty){settingsDirty=false;
+    if(mode===1)renderMode1();            // tense list / pronoun labels may have changed
+    else if(mode===2&&!m2Checked)newMode2(); // new question that respects the new rules
+    else if(mode===3&&!m3Checked)newMode3();
+  }
+  applyPlaceholders();updateHeader();
+}
+function applyTheme(){if(SET.theme==='light'||SET.theme==='dark')document.documentElement.dataset.theme=SET.theme;else delete document.documentElement.dataset.theme;}
+function applyPlaceholders(){const i=document.getElementById('m2-input');if(i)i.placeholder=SET.strictAccents?'Accents required':'Accents optional';}
+function renderSettingsPage(){
+  const el=document.getElementById('settings-page');if(!el)return;
+  const tg=(key,title,desc)=>`<label class="tg"><span class="tg-txt"><span class="tg-title">${title}</span><span class="tg-desc">${desc}</span></span><input type="checkbox" class="switch" data-set="${key}"${SET[key]?' checked':''}></label>`;
+  const pick=(id,title,opts,val,desc)=>`<div class="set-pick"><span class="tg-txt"><span class="tg-title">${title}</span>${desc?`<span class="tg-desc">${desc}</span>`:''}</span><select id="${id}">${opts.map(([v,t])=>`<option value="${attr(v)}"${String(val)===String(v)?' selected':''}>${attr(t)}</option>`).join('')}</select></div>`;
+  const rates=[[0.75,'Slower'],[0.88,'A little slower'],[1,'Normal'],[1.1,'A little faster']];
+  const m1=SET.m1Tenses||TENSES.map(t=>t.key);
+  const voiceStatus=window.speechSynthesis?(frVoices.length?`${frVoices.length} French voice${frVoices.length===1?'':'s'} on this device`:'No French voice found — the system default will be used.'):'This browser has no speech support.';
+  el.innerHTML=`
+  <div class="set-section"><div class="section-title">Practice</div>
+    ${tg('autoPlay','Auto-play the answer','Hear the correct form after every Check.')}
+    ${tg('autoAdvance','Auto-advance when correct','Moves to the next question a moment after a right answer. Wrong answers wait for you.')}
+    ${tg('strictAccents','Require accents','“etait” counts as wrong. Long-press a letter on the keyboard to type é, è, ç, ê…')}
+    ${tg('includeOn','Include “on”','Ask il, elle and on separately instead of il/elle.')}
+  </div>
+  <div class="set-section"><div class="section-title">Verbs</div>
+    ${pick('set-pool','Practice verbs',[[50,'Top 50'],[100,'Top 100'],[200,'Top 200'],[0,'All '+VRAW.length]],SET.pool||0,'Most common first. Applies to Single form, Vocab and Random.')}
+    ${tg('rememberTenses','Remember tense selection','Single form keeps your chosen tenses between sessions.')}
+  </div>
+  <div class="set-section"><div class="section-title">Conjugate — tenses shown</div>
+    <div class="pick-chips" id="m1-tense-chips">${TENSES.map(t=>`<button class="pick-chip${m1.includes(t.key)?' on':''}" data-key="${t.key}">${t.label}</button>`).join('')}</div>
+  </div>
+  <div class="set-section"><div class="section-title">Daily goal</div>
+    ${pick('set-goal','Answers per day',[[0,'Off'],[10,'10'],[20,'20'],[30,'30'],[50,'50'],[100,'100']],SET.goal||0,'Single form and Vocab answers count. Shown under the mode tabs with your day streak.')}
+  </div>
+  <div class="set-section"><div class="section-title">Pronunciation</div>
+    ${frVoices.length?pick('voice-sel','Voice',frVoices.map(v=>[v.voiceURI,voiceLabel(v)]),frVoice?frVoice.voiceURI:'',voiceStatus):`<p class="set-note">${voiceStatus}</p>`}
+    ${pick('rate-sel','Speed',rates,SET.rate||0.88,'')}
+    <div class="btn-row" style="margin:12px 0 4px;"><button class="btn sm" id="sp-test">🔊 Test sound</button></div>
+    <p class="set-note">For a more natural voice, download an Enhanced or Premium French voice: iPhone Settings → Accessibility → Spoken Content → Voices → French. Then reopen the app.</p>
+  </div>
+  <div class="set-section"><div class="section-title">Appearance</div>
+    ${pick('set-theme','Theme',[['system','Match phone'],['light','Light'],['dark','Dark']],SET.theme||'system','')}
+  </div>`;
+  el.querySelectorAll('input[data-set]').forEach(i=>i.onchange=()=>{const k=i.dataset.set;SET[k]=i.checked;
+    if(k==='rememberTenses')SET.savedTenses=i.checked&&activeTenses?[...activeTenses]:null;
+    saveSet();settingsDirty=true;applyPlaceholders();});
+  const on=(id,fn)=>{const x=document.getElementById(id);if(x)x.onchange=()=>{fn(x.value);saveSet();};};
+  on('set-pool',v=>{SET.pool=+v;settingsDirty=true;});
+  on('set-goal',v=>{SET.goal=+v;updateHeader();});
+  on('set-theme',v=>{SET.theme=v;applyTheme();});
+  on('voice-sel',v=>{SET.voice=v;initVoice();speak('Bonjour, je parle français');});
+  on('rate-sel',v=>{SET.rate=+v;speak('Bonjour, je parle français');});
+  document.getElementById('sp-test').onclick=e=>speak('Bonjour, je parle français',e.currentTarget);
+  el.querySelectorAll('#m1-tense-chips .pick-chip').forEach(c=>c.onclick=()=>{
+    const cur=new Set(SET.m1Tenses||TENSES.map(t=>t.key));
+    if(cur.has(c.dataset.key)){if(cur.size===1)return;cur.delete(c.dataset.key);}else cur.add(c.dataset.key);
+    SET.m1Tenses=cur.size===TENSES.length?null:TENSES.map(t=>t.key).filter(k=>cur.has(k));
+    c.classList.toggle('on',cur.has(c.dataset.key));saveSet();settingsDirty=true;});
 }
 function backupText(){return JSON.stringify({app:'frverb',v:1,at:Date.now(),daily:dailyData,tense:tenseData,verb:verbData,set:SET});}
 // Merge, never overwrite: for each day / tense / verb+tense keep whichever record has more attempts,
@@ -571,8 +696,16 @@ function restoreBackup(text){
   for(const d in o.daily||{}){if(newer(dailyData[d],o.daily[d])){dailyData[d]=o.daily[d];n++;}}
   for(const k in o.tense||{}){if(newer(tenseData[k],o.tense[k]))tenseData[k]=o.tense[k];}
   for(const v in o.verb||{}){const rv=o.verb[v];if(!rv||typeof rv!=='object')continue;if(!verbData[v])verbData[v]={};for(const k in rv){if(newer(verbData[v][k],rv[k])){verbData[v][k]=rv[k];}}}
-  saveAll();updateSrsBadge();renderStatsContent();
+  saveAll();updateSrsBadge();renderStatsContent();updateHeader();
   return n?`Backup restored — ${n} day${n===1?'':'s'} of history merged in.`:'Backup checked — this device already had everything in it.';
+}
+function dayStreak(){const d=new Date();if(!((dailyData[todayStr()]||{}).total))d.setDate(d.getDate()-1);let s=0;for(;;){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');if(dailyData[k]&&dailyData[k].total>0){s++;d.setDate(d.getDate()-1);}else break;}return s;}
+function updateHeader(){
+  const gp=document.getElementById('goal-pill'),sp=document.getElementById('streak-pill');if(!gp)return;
+  const t=(dailyData[todayStr()]||{total:0}).total,g=+SET.goal||0;
+  if(g){const pc=Math.min(100,Math.round(t/g*100));gp.hidden=false;gp.textContent='🎯 '+Math.min(t,9999)+'/'+g+(t>=g?' ✓':'');gp.classList.toggle('met',t>=g);gp.style.background=`linear-gradient(90deg,var(--success-bg) ${pc}%,var(--bg2) ${pc}%)`;}else gp.hidden=true;
+  const st=dayStreak();sp.hidden=!st;sp.textContent='🕊️ '+st;
+  const sb=document.getElementById('sub-bar');if(sb)sb.style.display=(mode===2||g||st)?'':'none';
 }
 function closeStats(){document.getElementById('stats-overlay').style.display='none';}
 function calcStreak(){const d=new Date(todayStr());let s=0;while(true){const k=d.toISOString().slice(0,10);if(dailyData[k]&&dailyData[k].total>0){s++;d.setDate(d.getDate()-1);}else break;}return s;}
@@ -645,7 +778,7 @@ let tensePanelOpen=false;
 function toggleTensePanel(){tensePanelOpen=!tensePanelOpen;syncTenseUI();}
 function syncTenseUI(){
   const tf=document.getElementById('tense-filter'),tt=document.getElementById('tense-toggle');if(!tf||!tt)return;
-  tt.style.display=mode===2?'':'none';document.getElementById('sub-bar').style.display=mode===2?'':'none';tf.style.display=(mode===2&&tensePanelOpen)?'':'none';
+  tt.style.display=mode===2?'':'none';updateHeader();tf.style.display=(mode===2&&tensePanelOpen)?'':'none';
   const lbl=!activeTenses?'All':activeTenses.size===1?M2_TENSES.find(t=>activeTenses.has(t.key)).label:activeTenses.size+' selected';
   tt.textContent='Tenses: '+lbl+(tensePanelOpen?' ▴':' ▾');tt.classList.toggle('on',!!activeTenses);
 }
@@ -660,17 +793,17 @@ function tapKeep(el,fn){
   el.addEventListener('click',()=>{if(Date.now()-touched>600)fn();});
 }
 function rand(a){return a[Math.floor(Math.random()*a.length)];}
-function updateScore(){document.getElementById('sc-right').textContent='✓ '+sesCorrect;document.getElementById('sc-wrong').textContent='✗ '+sesWrong;document.getElementById('streak-label').textContent=streak>2?'🔥'+streak:'';}
+function updateScore(){document.getElementById('sc-right').textContent='✓ '+sesCorrect;document.getElementById('sc-wrong').textContent='✗ '+sesWrong;}
 
-function newMode1(){const p=rand(VRAW);currentVerb=p[0];const inp=document.getElementById('mode1-verb-input');if(inp)inp.value=currentVerb;currentAnswers={};TENSES.forEach(t=>{currentAnswers[t.key]=conj(currentVerb,t.key);});renderMode1();}
+function newMode1(){const p=rand(poolVerbs());currentVerb=p[0];const inp=document.getElementById('mode1-verb-input');if(inp)inp.value=currentVerb;currentAnswers={};TENSES.forEach(t=>{currentAnswers[t.key]=conj(currentVerb,t.key);});renderMode1();}
 function renderMode1(){
   const m=VERB_MAP[currentVerb]||'',ui=document.getElementById('mode1-ui');
-  const tenseHTML=TENSES.map(t=>{
+  const tenseHTML=TENSES.filter(t=>!SET.m1Tenses||SET.m1Tenses.includes(t.key)).map(t=>{
     const isPt=t.key==='participePre',isIm=t.key==='imperatif';
     if(isPt){const ans=currentAnswers[t.key][0]||'';return`<div class="tense-block" style="grid-column:span 2;"><div class="tense-label">${t.label}</div><div class="pronoun-row"><input class="conj-input" style="max-width:180px;" data-tense="${t.key}" data-idx="0" placeholder="…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button class="speak-btn" onclick="speak('${esc(ans)}',this)">&#128266;</button></div></div>`;}
     const rows=isIm
       ?[1,3,4].map((i,j)=>{const ans=currentAnswers[t.key][i]||'';return`<div class="pronoun-row"><span class="pronoun">${IMP_PRONOUNS[j]}</span><input class="conj-input" data-tense="${t.key}" data-idx="${i}" placeholder="…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button class="speak-btn" onclick="speak('${esc(ans)}',this)">&#128266;</button></div>`;}).join('')
-      :PRONOUNS.map((p,i)=>{const vf=currentAnswers[t.key][i]||'';return`<div class="pronoun-row"><span class="pronoun">${dp(p,vf)}</span><input class="conj-input" data-tense="${t.key}" data-idx="${i}" placeholder="…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button class="speak-btn" onclick="speak('${esc(vf)}',this)">&#128266;</button></div>`;}).join('');
+      :PRONOUNS.map((p,i)=>{const vf=currentAnswers[t.key][i]||'';return`<div class="pronoun-row"><span class="pronoun">${i===2&&SET.includeOn?'il/elle/on':dp(p,vf)}</span><input class="conj-input" data-tense="${t.key}" data-idx="${i}" placeholder="…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button class="speak-btn" onclick="speak('${esc(vf)}',this)">&#128266;</button></div>`;}).join('');
     return`<div class="tense-block"><div class="tense-label">${t.label}</div>${rows}</div>`;
   }).join('');
   ui.innerHTML=`<div class="card"><div class="verb-header"><span class="verb-display">${currentVerb}</span><button class="speak-btn-md" onclick="speak('${esc(currentVerb)}',this)">&#128266;</button></div><div class="verb-meaning">${m}</div><div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;">Conjugate all tenses · &#128266; to hear any form</div><div class="tenses-grid">${tenseHTML}</div><div class="btn-row m1-actions"><button class="btn primary" onclick="checkMode1()">Check</button><button class="btn" onclick="revealMode1()">Reveal</button><button class="btn" onclick="newMode1()">Next verb →</button></div></div>`;
@@ -681,12 +814,14 @@ function checkMode1(){const ui=document.getElementById('mode1-ui');let aw=false;
 function revealMode1(){document.getElementById('mode1-ui').querySelectorAll('.conj-input').forEach(inp=>{const t=inp.dataset.tense,i=parseInt(inp.dataset.idx),e=currentAnswers[t][i];if(!e||e==='—')return;inp.classList.remove('correct','wrong');inp.classList.add('revealed');inp.value=e;});}
 
 function newMode2(){
+  clearTimeout(advTimer);
   const{verb,tense}=getWeightedPick();m2Verb=verb;m2Tense=tense.key;m2TL=tense.label;m2TKey=tense.key;
   const ans=conj(m2Verb,m2Tense);m2IsImp=m2Tense==='imperatif';
   let vi=m2IsImp?[1,3,4]:[0,1,2,3,4,5];vi=vi.filter(i=>ans[i]&&ans[i]!=='—');
   const idx=rand(vi);
   if(m2IsImp){const j=[1,3,4].indexOf(idx);m2PIdx=j;m2PL=IMP_PRONOUNS[j];m2PE=IMP_PRONOUNS_EN[j];}
-  else{m2PIdx=idx;m2PL=dp(PRONOUNS[idx],ans[idx]);m2PE=PRONOUNS_EN[idx];}
+  else{m2PIdx=idx;m2PL=dp(PRONOUNS[idx],ans[idx]);m2PE=PRONOUNS_EN[idx];
+    if(idx===2&&SET.includeOn){const pk=rand([['il','he'],['elle','she'],['on','one']]);m2PL=pk[0];m2PE=pk[1];}}
   m2Answer=ans[idx];m2Checked=false;renderMode2();
 }
 function ensureMode2(){
@@ -696,7 +831,7 @@ function ensureMode2(){
     <div class="verb-meaning" id="m2-meaning"></div>
     <div class="verb-translation" id="m2-hint"></div>
     <div class="verb-sub" id="m2-sub"></div>
-    <div class="m2-input-wrap"><input class="m2-input" id="m2-input" placeholder="Answer · accents optional" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"/><button class="btn primary" id="m2-check">Check</button></div>
+    <div class="m2-input-wrap"><input class="m2-input" id="m2-input" placeholder="Accents optional" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"/><button class="btn primary" id="m2-check">Check</button></div>
     <div class="feedback" id="m2-feedback"></div>
     <div class="btn-row"><button class="btn" id="m2-reveal">Reveal</button><div class="answer-slot" id="m2-answer-audio"></div><button class="btn" id="m2-next">Next →</button></div>
   </div>`;
@@ -716,17 +851,23 @@ function renderMode2(){
   const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');
   inp.value='';inp.className='m2-input';fb.className='feedback';fb.textContent='';
   document.getElementById('m2-answer-audio').innerHTML='';setCheckLabel('m2-check',false);
+  applyPlaceholders();
   try{inp.focus({preventScroll:true});}catch(e){inp.focus();}
 }
+let advTimer=null;
+function scheduleAdvance(m,fn){clearTimeout(advTimer);advTimer=setTimeout(()=>{if(mode===m)fn();},SET.autoPlay?1900:1100);}
 function setCheckLabel(id,done){const b=document.getElementById(id);if(b){b.textContent=done?'Next →':'Check';b.classList.toggle('primary',true);}}
 function showAnswerAudio(){const w=document.getElementById('m2-answer-audio');if(!w)return;w.innerHTML='';const b=document.createElement('button');b.className='answer-speak';b.textContent='🔊 '+m2Answer;tapKeep(b,()=>speak(m2Answer,b));w.appendChild(b);}
-function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${m2Answer}</strong>`;sesWrong++;streak=0;}m2Checked=true;setCheckLabel('m2-check',true);updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);}
-function revealMode2(){const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');inp.value=m2Answer;inp.classList.remove('correct','wrong');inp.classList.add('revealed');fb.classList.remove('ok','err');fb.textContent='';m2Checked=true;setCheckLabel('m2-check',true);showAnswerAudio();}
+function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${m2Answer}</strong>`;sesWrong++;streak=0;}m2Checked=true;setCheckLabel('m2-check',true);updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);
+  if(SET.autoPlay){const ab=document.querySelector('#m2-answer-audio .answer-speak');speak(m2Answer,ab);}
+  if(ok&&SET.autoAdvance)scheduleAdvance(2,()=>{if(m2Checked)newMode2();});}
+function revealMode2(){const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');inp.value=m2Answer;inp.classList.remove('correct','wrong');inp.classList.add('revealed');fb.classList.remove('ok','err');fb.textContent='';m2Checked=true;setCheckLabel('m2-check',true);showAnswerAudio();if(SET.autoPlay)speak(m2Answer,document.querySelector('#m2-answer-audio .answer-speak'));}
 
 function getWeightedPickVocab(){
   const tot=(tenseData['vocab']||{total:0}).total||0;
   const blend=Math.min(1,tot/200);
-  const vW=VRAW.map(([v],i)=>{
+  const PV=poolVerbs();
+  const vW=PV.map(([v],i)=>{
     const fw=freqW(i);
     const vd=(verbData[v]||{})['vocab']||{total:0,correct:0};
     return fw*(1-blend)+perfW(vd.correct,vd.total)*blend*fw;
@@ -734,7 +875,7 @@ function getWeightedPickVocab(){
   const vT=vW.reduce((a,b)=>a+b,0);
   let vR=Math.random()*vT,vI=0;
   for(let i=0;i<vW.length;i++){vR-=vW[i];if(vR<=0){vI=i;break;}}
-  return VRAW[vI];
+  return PV[vI];
 }
 
 
@@ -752,6 +893,7 @@ function matchesMeaning(input,meaning){
 }
 
 function newMode3(){
+  clearTimeout(advTimer);
   const p=getWeightedPickVocab();m3Verb=p[0];m3Meaning=p[1];m3Checked=false;renderMode3();
 }
 
@@ -786,6 +928,8 @@ function checkMode3(){
   if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}
   else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Accepted: <strong>${m3Meaning}</strong>`;sesWrong++;streak=0;}
   m3Checked=true;setCheckLabel('m3-check',true);updateScore();recordResult(m3Verb,'vocab',ok);
+  if(SET.autoPlay)speak(m3Verb,document.getElementById('m3-speak'));
+  if(ok&&SET.autoAdvance)scheduleAdvance(3,()=>{if(m3Checked)newMode3();});
 }
 
 function revealMode3(){
@@ -830,7 +974,7 @@ function selectVerb(v){
 }
 function closeSuggestions(){document.getElementById('verb-suggestions').style.display='none';}
 function pickRandomVerb(){
-  const p=rand(VRAW);
+  const p=rand(poolVerbs());
   document.getElementById('mode1-verb-input').value=p[0];
   selectVerb(p[0]);
 }
@@ -840,8 +984,11 @@ document.addEventListener('click',e=>{if(!e.target.closest('#mode1-verb-picker')
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 loadAll();
+if(SET.rememberTenses&&Array.isArray(SET.savedTenses)){const ks=SET.savedTenses.filter(k=>M2_TENSES.some(t=>t.key===k));if(ks.length)activeTenses=new Set(ks);}
+applyTheme();
 buildTenseChips();
 setMode([1,2,3].includes(SET.mode)?SET.mode:1);
+applyPlaceholders();updateHeader();
 </script>
 </body>
 </html>
