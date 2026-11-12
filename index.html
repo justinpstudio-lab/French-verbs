@@ -220,6 +220,32 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 .pick-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0 4px;}
 .pick-chip{font-size:14px;padding:7px 14px;min-height:36px;border-radius:18px;border:1.5px solid var(--border2);background:transparent;color:var(--text2);font-family:inherit;}
 .pick-chip.on{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);font-weight:500;}
+/* Reference tab: information, not a quiz — serif + accent colour */
+.mode-btn{line-height:1.15;height:50px;min-height:0;padding:4px;overflow:hidden;} /* fixed: font loading must not shift the quiz card */
+.mode-btn.ref-tab{font-family:Georgia,'Times New Roman',serif;font-style:italic;color:var(--info-text);font-size:14px;}
+.mode-btn.ref-tab.active{color:var(--info-text);}
+.ref-page{font-family:Georgia,'Times New Roman',serif;}
+.ref-intro{font-size:15px;color:var(--text2);margin:2px 0 12px;font-style:italic;}
+.ref-group{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 6px;}
+.ref-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.ref-chip{font-family:inherit;font-size:15px;padding:6px 13px;min-height:36px;border-radius:18px;border:1.5px solid var(--border2);background:transparent;color:var(--text);}
+.ref-chip.on{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);}
+.ref-card{margin-top:16px;border:0.5px solid var(--border);border-radius:16px;padding:1.1rem;}
+.ref-verb{font-size:32px;font-weight:600;line-height:1.15;display:flex;align-items:center;gap:10px;}
+.ref-mean{font-size:16px;color:var(--info-text);font-style:italic;}
+.ref-meta{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--text2);margin:8px 0 4px;line-height:1.5;}
+.ref-note{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--text2);background:var(--bg2);border-radius:10px;padding:8px 10px;margin:10px 0 4px;line-height:1.45;}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+@media(max-width:560px){.ref-grid{grid-template-columns:1fr;}}
+.ref-tense{background:var(--bg2);border-radius:12px;padding:10px 12px;}
+.ref-tl{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;font-weight:600;color:var(--info-text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.ref-row{display:flex;gap:8px;align-items:baseline;padding:4px 2px;font-size:17px;border-radius:6px;cursor:pointer;}
+.ref-row:active{background:var(--bg3);}
+.ref-pr{color:var(--text3);min-width:0;white-space:nowrap;}
+.ref-f{color:var(--text);}
+.ref-f b{color:var(--info-text);font-weight:700;}
+.ref-legend{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--text2);margin-top:12px;}
+.ref-legend b{color:var(--info-text);}
 </style>
 </head>
 <body>
@@ -234,6 +260,7 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
     <button class="mode-btn active" id="btn-m1" onclick="setMode(1)">Conjugate</button>
     <button class="mode-btn" id="btn-m2" onclick="setMode(2)">Single form</button>
     <button class="mode-btn" id="btn-m3" onclick="setMode(3)">Vocab</button>
+    <button class="mode-btn ref-tab" id="btn-m4" onclick="setMode(4)">Common conjugations</button>
   </div>
   <div class="sub-bar" id="sub-bar">
     <button class="tense-toggle" id="tense-toggle" onclick="toggleTensePanel()" style="display:none;">Tenses: All ▾</button>
@@ -251,6 +278,7 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
   <div id="mode1-ui"></div>
   <div id="mode2-ui" style="display:none;"></div>
   <div id="mode3-ui" style="display:none;"></div>
+  <div id="mode4-ui" style="display:none;"></div>
 </div>
 
 <div class="overlay" id="stats-overlay">
@@ -629,6 +657,7 @@ function closeSettings(){
     if(mode===1)renderMode1();            // tense list / pronoun labels may have changed
     else if(mode===2&&!m2Checked)newMode2(); // new question that respects the new rules
     else if(mode===3&&!m3Checked)newMode3();
+    else if(mode===4)renderRef();
   }
   applyPlaceholders();updateHeader();
 }
@@ -768,11 +797,11 @@ let sesCorrect=0,sesWrong=0,streak=0,mode=1,currentVerb='',currentAnswers={};
 let m2Verb='',m2Tense='',m2TKey='',m2PL='',m2PE='',m2TL='',m2PIdx=0,m2IsImp=false,m2Answer='',m2Checked=false;
 
 function setMode(m){mode=m;SET.mode=m;saveSet();
-  [1,2,3].forEach(i=>document.getElementById('btn-m'+i).classList.toggle('active',m===i));
+  [1,2,3,4].forEach(i=>document.getElementById('btn-m'+i).classList.toggle('active',m===i));
   document.getElementById('mode1-verb-picker').style.display=m===1?'':'none';
-  [1,2,3].forEach(i=>document.getElementById('mode'+i+'-ui').style.display=m===i?'':'none');
+  [1,2,3,4].forEach(i=>document.getElementById('mode'+i+'-ui').style.display=m===i?'':'none');
   syncTenseUI();updateSrsBadge();
-  if(m===1)newMode1();else if(m===2)newMode2();else newMode3();
+  if(m===1)newMode1();else if(m===2)newMode2();else if(m===3)newMode3();else renderRef();
 }
 let tensePanelOpen=false;
 function toggleTensePanel(){tensePanelOpen=!tensePanelOpen;syncTenseUI();}
@@ -939,6 +968,119 @@ function revealMode3(){
 }
 
 
+// ── COMMON CONJUGATIONS (reference, not a quiz) ──────────────────────────
+// Forms come from conj(), the same engine the quizzes use (verified against Verbiste + Lexique).
+const REF_GROUPS=[
+  ['Regular verbs',[['parler','-er · parler'],['finir','-ir · finir'],['attendre','-re · attendre']]],
+  ['Most common irregular',['être','avoir','faire','aller','dire','pouvoir','vouloir','voir','savoir','devoir','venir','prendre','falloir','croire','mettre']],
+  ['Also irregular',['partir','connaître','tenir','mourir','vivre','ouvrir','écrire','lire','boire','suivre','recevoir','courir','rire','conduire','plaire','valoir','naître']],
+  ['Spelling changes (-er)',['manger','commencer','appeler','jeter','acheter','préférer','payer','envoyer']],
+];
+const REF_REG={parler:{stem:'parl',fut:'parler'},finir:{stem:'fin',fut:'finir'},attendre:{stem:'attend',fut:'attendr'}};
+const REF_NOTES={
+  parler:'Most French verbs (about 90%) are -er verbs like this. Remove -er to get the stem, then add the bold endings. Future & conditional add endings to the whole infinitive.',
+  finir:'Regular -ir verbs add -iss- in the plural present, imparfait, subjunctive and present participle. Careful: partir, dormir, sortir, sentir, servir don’t follow this — see partir.',
+  attendre:'Regular -re verbs: no ending in il/elle form (il attend). Future & conditional drop the final e: attendr-.',
+  partir:'Pattern shared by dormir, sortir, sentir, servir, mentir: drop the last consonant of the stem in je/tu/il (je pars, je dors, je sors).',
+  falloir:'Impersonal: only exists with il (il faut = it is necessary / one must).',
+  manger:'-ger verbs keep an e before a and o (nous mangeons, je mangeais) so the g stays soft.',
+  commencer:'-cer verbs take ç before a and o (nous commençons, je commençais) so the c stays soft.',
+  appeler:'Doubles the l when the ending is silent (j’appelle) but not before -ons/-ez (nous appelons).',
+  jeter:'Doubles the t when the ending is silent (je jette) but not before -ons/-ez (nous jetons).',
+  acheter:'Takes è when the ending is silent (j’achète); future keeps it (j’achèterai).',
+  préférer:'é → è when the ending is silent (je préfère). Future: préférerai (traditional) or préfèrerai (1990 spelling).',
+  payer:'-ayer verbs can keep the y or switch to i: je paie / je paye — both correct.',
+  envoyer:'Regular -oyer pattern (j’envoie) but irregular future: j’enverrai.',
+  aller:'Irregular in almost every tense; future uses ir- (j’irai). Takes être in compound tenses.',
+  être:'The most irregular verb. Also the helper for compound tenses of movement verbs (je suis allé).',
+  avoir:'Helper verb for most compound tenses (j’ai parlé).',
+  pouvoir:'No imperative. Je peux (also je puis in formal writing).',
+  devoir:'Imperative exists but is almost never used.',
+};
+const REF_TENSES=[['present','Présent'],['imparfait','Imparfait'],['passeCompose','Passé composé'],['futurSimple','Futur simple'],['plusQueParfait','Plus-que-parfait'],['conditionnelPresent','Conditionnel présent'],['conditionnelPasse','Conditionnel passé'],['subjonctifPresent','Subjonctif présent'],['subjonctifPasse','Subjonctif passé'],['imperatif','Impératif'],['participePre','Participe présent']];
+const REF_ENDS={
+  present:[['e','s','x'],['es','s','x'],['e','t','a'],['ons','mes'],['ez','tes'],['ent','ont']],
+  imparfait:[['ais'],['ais'],['ait'],['ions'],['iez'],['aient']],
+  futurSimple:[['ai'],['as'],['a'],['ons'],['ez'],['ont']],
+  conditionnelPresent:[['ais'],['ais'],['ait'],['ions'],['iez'],['aient']],
+  subjonctifPresent:[['e'],['es'],['e'],['ions'],['iez'],['ent']],
+};
+const IMP_ENDS=[['e','s','x','a'],['ons'],['ez','tes']];
+const FALLOIR={present:'faut',imparfait:'fallait',futurSimple:'faudra',conditionnelPresent:'faudrait',subjonctifPresent:'faille',passeCompose:'a fallu',plusQueParfait:'avait fallu',conditionnelPasse:'aurait fallu',subjonctifPasse:'ait fallu'};
+function hesc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+// split a form into stem + bold ending
+function refSplit(verb,tense,i,form){
+  const r=REF_REG[verb];
+  if(r){const st=(tense==='futurSimple'||tense==='conditionnelPresent')?r.fut:r.stem;
+    return form.startsWith(st)&&form.length>st.length?[st,form.slice(st.length)]:[form,''];}
+  const c=tense==='imperatif'?IMP_ENDS[i]:tense==='participePre'?['ant']:(REF_ENDS[tense]||[])[i];
+  if(!c)return[form,''];
+  const e=[...c].sort((a,b)=>b.length-a.length).find(x=>form.endsWith(x)&&form.length>x.length);
+  return e?[form.slice(0,-e.length),e]:[form,''];
+}
+const fmt=([st,en])=>hesc(st)+(en?'<b>'+hesc(en)+'</b>':'');
+const REF_PR=['je','tu','il/elle','nous','vous','ils/elles'];
+function refPron(i,next,subj){const el=i===0&&swv(next);const p=el?"j’":REF_PR[i]+' ';
+  if(!subj)return p;return(i===2||i===5)?'qu’'+p:(el?'que j’':'que '+p);}
+function renderRef(){
+  const ui=document.getElementById('mode4-ui');
+  const v=REF_GROUPS.some(g=>g[1].some(x=>(Array.isArray(x)?x[0]:x)===SET.refVerb))?SET.refVerb:'parler';
+  const chips=REF_GROUPS.map(([g,list])=>`<div class="ref-group">${g}</div><div class="ref-chips">${list.map(x=>{const[k,l]=Array.isArray(x)?x:[x,x];return`<button class="ref-chip${k===v?' on':''}" data-v="${k}">${l}</button>`;}).join('')}</div>`).join('');
+  ui.innerHTML=`<div class="ref-page"><div class="ref-intro">Reference — not a quiz. Pick a verb to see its full conjugation. Tap any line to hear it.</div>${chips}<div class="ref-card" id="ref-card"></div></div>`;
+  ui.querySelectorAll('.ref-chip').forEach(b=>b.onclick=()=>{SET.refVerb=b.dataset.v;saveSet();renderRef();document.getElementById('ref-card').scrollIntoView({behavior:'smooth',block:'start'});});
+  renderRefCard(v);
+}
+function renderRefCard(v){
+  const el=document.getElementById('ref-card');
+  const isF=v==='falloir';
+  const meaning=isF?'to be necessary, must (impersonal)':(VERB_MAP[v]||'');
+  const d=isF?{aux:'avoir',pp:'fallu'}:(IRR[v]||regConj(v));
+  const ppSing=isF?'fallu':conj(v,'passeCompose')[0].split(' ').slice(1).join(' ');
+  const etre=d.aux==='être';
+  const ppShow=(i,pp)=>etre?(i<3?pp+'(e)':pp.replace(/s$/,'')+'(e)s'):pp;
+  let blocks='';
+  for(const[t,label]of REF_TENSES){
+    let rows=[];
+    if(isF){
+      if(t==='imperatif'||t==='participePre')continue;
+      const f=FALLOIR[t];const subj=t.startsWith('subjonctif');
+      rows.push([(subj?'qu’':'')+'il ',[f,'']]);
+    }else if(t==='imperatif'){
+      const imp=conj(v,'imperatif');if(imp[1]==='—'){blocks+=`<div class="ref-tense"><div class="ref-tl">${label}</div><div class="ref-row"><span class="ref-pr">—</span><span class="ref-f">no imperative</span></div></div>`;continue;}
+      [[1,'(tu)'],[3,'(nous)'],[4,'(vous)']].forEach(([ai,pl],j)=>rows.push([pl+' ',refSplit(v,t,j,imp[ai])]));
+    }else if(t==='participePre'){
+      rows.push(['',refSplit(v,t,0,conj(v,t)[0])]);
+    }else{
+      const forms=conj(v,t),subj=t.startsWith('subjonctif');
+      forms.forEach((f0,i)=>{
+        let f=f0.replace(/^que /,'');
+        const parts=f.split(' ');
+        if(parts.length===2){ // compound: helper + participle
+          const pp=ppShow(i,parts[1]);
+          const ppSplit=REF_REG[v]?refSplit(v,'pp',i,pp):[pp,''];
+          if(REF_REG[v]){const st=REF_REG[v].stem;ppSplit[0]=st;ppSplit[1]=pp.slice(st.length);}
+          rows.push([refPron(i,parts[0],subj),null,hesc(parts[0])+' '+fmt(ppSplit)]);
+        }else rows.push([refPron(i,f,subj),refSplit(v,t,i,f)]);
+      });
+    }
+    blocks+=`<div class="ref-tense"><div class="ref-tl">${label}</div>${rows.map(([pr,sp,html])=>{
+      let shown=html||fmt(sp);let p=pr.trim();
+      if(p.endsWith('’')){const k=p.lastIndexOf(' ');const el=p.slice(k+1);p=k<0?'':p.slice(0,k);shown=hesc(el)+shown;} // j’ai: no gap after an elided pronoun
+      const say=(p+' '+shown.replace(/<[^>]+>/g,'')).trim().replace(/^\((tu|nous|vous)\)\s*/,'').replace(/ils\/elles/,'ils').replace(/il\/elle/,'il').replace(/[()]/g,'').replace(/’/g,"'");
+      return`<div class="ref-row" data-say="${attr(say)}">${p?`<span class="ref-pr">${hesc(p)}</span>`:''}<span class="ref-f">${shown}</span></div>`;}).join('')}</div>`;
+  }
+  const pprs=isF?'—':conj(v,'participePre')[0];
+  const r=REF_REG[v];
+  el.innerHTML=`<div class="ref-verb">${hesc(v)}<button class="speak-btn-md" id="ref-say" aria-label="Hear the verb">&#128266;</button></div>
+    <div class="ref-mean">${hesc(meaning)}</div>
+    <div class="ref-meta">${r?`Stem: <b>${hesc(r.stem)}-</b> · `:''}Helper verb: <b>${d.aux}</b> · Past participle: <b>${hesc(ppSing)}</b>${etre?' (agrees: allé, allée, allés, allées)':''} · Present participle: <b>${hesc(pprs)}</b></div>
+    ${REF_NOTES[v]?`<div class="ref-note">${REF_NOTES[v]}</div>`:''}
+    <div class="ref-grid">${blocks}</div>
+    <div class="ref-legend"><b>Bold</b> = ending.${r?'':' For irregular verbs the plain part (the stem) is what changes — that’s the bit to memorize.'}</div>`;
+  document.getElementById('ref-say').onclick=e=>speak(v,e.currentTarget);
+  el.querySelectorAll('.ref-row[data-say]').forEach(row=>row.onclick=()=>speak(row.dataset.say));
+}
+
 let suggHighlight=-1;
 function filterVerbSuggestions(){
   const inp=document.getElementById('mode1-verb-input');
@@ -987,7 +1129,7 @@ loadAll();
 if(SET.rememberTenses&&Array.isArray(SET.savedTenses)){const ks=SET.savedTenses.filter(k=>M2_TENSES.some(t=>t.key===k));if(ks.length)activeTenses=new Set(ks);}
 applyTheme();
 buildTenseChips();
-setMode([1,2,3].includes(SET.mode)?SET.mode:1);
+setMode([1,2,3,4].includes(SET.mode)?SET.mode:1);
 applyPlaceholders();updateHeader();
 </script>
 </body>
