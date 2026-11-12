@@ -136,35 +136,79 @@ button{-webkit-tap-highlight-color:transparent;}
   .tense-block{grid-column:auto!important;}
   .metrics-row{grid-template-columns:repeat(2,1fr);}
 }
+/* ── Mobile app layout ─────────────────────────────── */
+body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
+.container{max-width:640px;}
+.app-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.app-head h1{font-size:22px;font-weight:600;margin:0;flex:1;white-space:nowrap;}
+.score{display:flex;gap:6px;align-items:center;font-variant-numeric:tabular-nums;}
+.score-pill{font-size:14px;padding:4px 10px;}
+#streak-label{font-size:14px;}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:0.5px solid var(--border2);background:transparent;font-size:20px;display:inline-flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0;}
+.mode-bar{gap:4px;padding:4px;background:var(--bg2);border-radius:12px;margin-bottom:10px;}
+.mode-btn{min-height:40px;padding:8px 4px;border:none;border-radius:9px;font-size:15px;color:var(--text2);}
+.mode-btn.active{background:var(--bg);color:var(--text);border:none;box-shadow:0 1px 3px rgba(0,0,0,.18);font-weight:600;}
+@media(prefers-color-scheme:dark){.mode-btn.active{background:var(--bg3);}}
+.sub-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.sub-bar .srs-badge,.sub-bar .filter-badge{margin-left:auto;}
+.tense-toggle{min-height:36px;padding:6px 14px;border-radius:18px;border:1.5px solid var(--border2);background:transparent;color:var(--text);font-size:14px;font-family:inherit;}
+.tense-toggle.on{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);}
+.tense-filter{margin-bottom:12px;}
+.tense-chip{font-size:14px;padding:7px 14px;min-height:36px;}
+.card{padding:1.1rem;border-radius:16px;}
+.verb-header{margin-bottom:6px;}
+.verb-display{font-size:34px;font-weight:600;line-height:1.15;}
+.verb-meaning{font-size:16px;}
+.verb-translation{font-size:15px;margin-bottom:0;}
+.quiz-card .verb-meaning,.quiz-card .verb-translation{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.5em;}
+.verb-sub{font-size:18px;font-weight:600;margin:8px 0 14px;}
+.speak-btn-md{width:44px;height:44px;min-width:44px;border-radius:12px;font-size:18px;}
+.speak-btn{width:36px;height:36px;min-width:36px;font-size:15px;}
+.btn{min-height:44px;padding:10px 18px;font-size:16px;border-radius:10px;}
+.btn.sm{min-height:40px;font-size:14px;}
+.m2-input{font-size:18px;padding:12px 14px;min-height:50px;border-radius:10px;}
+.m2-input-wrap .btn{min-height:50px;}
+.feedback{font-size:16px;min-height:2.9em;margin-top:10px;}
+.quiz-card .btn-row{flex-wrap:nowrap;margin-top:4px;}
+.answer-slot{flex:1;min-width:0;display:flex;justify-content:center;}
+.answer-speak{max-width:100%;min-height:44px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tense-label{font-size:12px;}
+.pronoun{font-size:15px;min-width:58px;}
+.pronoun-row{gap:8px;margin-bottom:8px;}
+.conj-input{padding:8px 10px;border-radius:8px;min-height:40px;}
+.tense-block{padding:12px;}
+.m1-actions{flex-wrap:nowrap!important;gap:8px;position:sticky;bottom:0;z-index:5;background:var(--bg);margin-top:0;padding:10px 0 calc(10px + env(safe-area-inset-bottom));border-top:0.5px solid var(--border);}
+#mode1-verb-picker{position:relative;display:flex;gap:8px;align-items:center;margin-bottom:12px;}
+#mode1-verb-input{flex:1;min-width:0;padding:10px 12px;min-height:44px;border:0.5px solid var(--border2);border-radius:10px;font-size:16px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;}
+#verb-suggestions{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:var(--bg);border:0.5px solid var(--border2);border-radius:10px;max-height:260px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.verb-sugg-item{padding:12px 14px!important;font-size:16px!important;}
+.close-btn{min-height:44px;padding:8px 16px;font-size:15px;}
+.overlay-title{font-size:20px;font-weight:600;}
+.m1-actions .btn{flex:1;padding:10px 6px;white-space:nowrap;}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>French Verbs</h1>
-  <p class="subtitle">SRS-powered · accents optional · history saved on this device</p>
+  <header class="app-head">
+    <h1>French Verbs</h1>
+    <div class="score"><span class="score-pill good" id="sc-right">✓ 0</span><span class="score-pill bad" id="sc-wrong">✗ 0</span><span id="streak-label"></span></div>
+    <button class="icon-btn" onclick="openStats()" aria-label="Stats, settings and backup">📊</button>
+  </header>
   <div class="mode-bar">
-    <button class="mode-btn active" id="btn-m1" onclick="setMode(1)">Mode 1 — full conjugation</button>
-    <button class="mode-btn" id="btn-m2" onclick="setMode(2)">Mode 2 — single form</button>
-    <button class="mode-btn" id="btn-m3" onclick="setMode(3)">Mode 3 — vocab</button>
+    <button class="mode-btn active" id="btn-m1" onclick="setMode(1)">Conjugate</button>
+    <button class="mode-btn" id="btn-m2" onclick="setMode(2)">Single form</button>
+    <button class="mode-btn" id="btn-m3" onclick="setMode(3)">Vocab</button>
   </div>
-  <div class="top-bar">
-    <span style="font-size:13px;color:var(--text2);">Session</span>
-    <span class="score-pill good" id="sc-right">0 correct</span>
-    <span class="score-pill bad" id="sc-wrong">0 wrong</span>
-    <span id="streak-label" style="font-size:12px;color:var(--text3);"></span>
-    <span class="srs-badge" id="srs-badge" style="margin-left:auto;">freq. weighted</span>
-    <button class="stats-btn" onclick="openStats()">📊 Stats &amp; backup</button>
+  <div class="sub-bar" id="sub-bar">
+    <button class="tense-toggle" id="tense-toggle" onclick="toggleTensePanel()" style="display:none;">Tenses: All ▾</button>
+    <span class="srs-badge" id="srs-badge">freq. weighted</span>
   </div>
-  <div class="tense-filter" id="tense-filter" style="display:none;">
-    <div class="tense-filter-label">Practice tenses — select one or more, or use All (SRS)</div>
-    <div class="tense-chips" id="tense-chips"></div>
-  </div>
-  <div id="mode1-verb-picker" style="margin-bottom:0.75rem;position:relative;display:flex;gap:8px;align-items:center;">
-    <input id="mode1-verb-input" placeholder="Type a verb to practice…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-      style="flex:1;padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;"
+  <div class="tense-filter" id="tense-filter" style="display:none;"><div class="tense-chips" id="tense-chips"></div></div>
+  <div id="mode1-verb-picker">
+    <input id="mode1-verb-input" placeholder="Type a verb to practice…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"
       oninput="filterVerbSuggestions()" onkeydown="verbInputKey(event)" onfocus="filterVerbSuggestions()"/>
-    <button class="btn" onclick="pickRandomVerb()">Random →</button>
-    <div id="verb-suggestions" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:50;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);max-height:220px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.12);min-width:220px;"></div>
+    <button class="btn" onclick="pickRandomVerb()">Random</button>
+    <div id="verb-suggestions"></div>
   </div>
   <div id="mode1-ui"></div>
   <div id="mode2-ui" style="display:none;"></div>
@@ -188,7 +232,7 @@ const KS='frverb-settings-v1';let SET={voice:'',rate:0.88};
 try{const r=localStorage.getItem(KS);if(r)SET={...SET,...JSON.parse(r)};}catch(e){}
 function saveSet(){try{localStorage.setItem(KS,JSON.stringify(SET));}catch(e){}}
 let frVoices=[],frVoice=null;
-function voiceScore(v){const t=(v.name+' '+v.voiceURI).toLowerCase();return(/premium/.test(t)?40:/enhanced/.test(t)?30:/compact/.test(t)?0:10)+(/^fr[-_]fr/i.test(v.lang)?5:/^fr[-_]ca/i.test(v.lang)?2:0);}
+function voiceScore(v){const t=(v.name+' '+v.voiceURI).toLowerCase();return(/premium/.test(t)?40:/enhanced/.test(t)?30:/compact/.test(t)?0:10)+(/^fr[-_]fr/i.test(v.lang)?100:/^fr[-_]ca/i.test(v.lang)?20:0);} // France first, then quality
 function voiceLabel(v){const t=(v.name+' '+v.voiceURI).toLowerCase(),q=/premium/.test(t)?'Premium':/enhanced/.test(t)?'Enhanced':'';return v.name.replace(/\s*\((premium|enhanced)\)\s*/i,' ').trim()+(q?' ('+q+')':'')+' · '+v.lang.replace('_','-');}
 function initVoice(){try{frVoices=speechSynthesis.getVoices().filter(x=>/^fr/i.test(x.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));frVoice=frVoices.find(x=>x.voiceURI===SET.voice)||frVoices[0]||null;}catch(e){frVoice=null;}}
 if(window.speechSynthesis){speechSynthesis.addEventListener('voiceschanged',()=>{initVoice();const o=document.getElementById('stats-overlay');if(o&&o.style.display==='block')renderSettings();});initVoice();}
@@ -446,7 +490,7 @@ function buildTenseChips(){
   M2_TENSES.forEach(t=>{const c=document.createElement('button');c.className='tense-chip';c.dataset.key=t.key;c.textContent=t.label;applyChip(c,activeTenses&&activeTenses.has(t.key));c.onclick=()=>toggleTense(t.key);wrap.appendChild(c);});
 }
 function toggleTense(key){if(!activeTenses)activeTenses=new Set();if(activeTenses.has(key))activeTenses.delete(key);else activeTenses.add(key);if(!activeTenses.size)activeTenses=null;refreshChips();}
-function refreshChips(){document.querySelectorAll('.tense-chip').forEach(c=>{applyChip(c,c.dataset.type==='all'?activeTenses===null:activeTenses&&activeTenses.has(c.dataset.key));});updateSrsBadge();}
+function refreshChips(){document.querySelectorAll('.tense-chip').forEach(c=>{applyChip(c,c.dataset.type==='all'?activeTenses===null:activeTenses&&activeTenses.has(c.dataset.key));});updateSrsBadge();syncTenseUI();}
 
 // ── SRS ───────────────────────────────────────────────────────────────
 const FREQ_K=0.003;
@@ -488,6 +532,8 @@ function renderSettings(){
     :`<p class="set-note">No French voice found on this device yet — audio will use the system default.</p>`;
   const canFile=!!(navigator.canShare&&window.File);
   el.innerHTML=`<div class="section-title">Pronunciation</div>${voiceHTML}
+  <p class="set-note" style="margin-bottom:8px;">${window.speechSynthesis?(frVoices.length?`${frVoices.length} French voice${frVoices.length===1?'':'s'} found · using ${attr(voiceLabel(frVoice))}`:'Speech is available but no French voice was found.'):'This browser has no speech support.'}</p>
+  <div class="btn-row" style="margin:0 0 10px;"><button class="btn sm" id="sp-test">🔊 Test sound</button></div>
   <div class="set-row"><label for="rate-sel">Speed</label><select id="rate-sel">${rates.map(([v,t])=>`<option value="${v}"${(SET.rate||0.88)==v?' selected':''}>${t}</option>`).join('')}</select></div>
   <p class="set-note">For a more natural voice, download an Enhanced or Premium French voice: iPhone Settings → Accessibility → Spoken Content → Voices → French. Then reopen the app.</p>
   <div class="section-title">Backup</div>
@@ -503,6 +549,7 @@ function renderSettings(){
   <div id="bk-msg" role="status"></div>`;
   const msg=document.getElementById('bk-msg'),ta=document.getElementById('bk-text');
   const vs=document.getElementById('voice-sel');if(vs)vs.onchange=()=>{SET.voice=vs.value;saveSet();initVoice();speak('Bonjour, je parle français');};
+  document.getElementById('sp-test').onclick=e=>speak('Bonjour, je parle français',e.currentTarget);
   const rs=document.getElementById('rate-sel');rs.onchange=()=>{SET.rate=+rs.value;saveSet();speak('Bonjour, je parle français');};
   document.getElementById('bk-copy').onclick=async()=>{const t=backupText();try{await navigator.clipboard.writeText(t);msg.textContent='Backup copied. Paste it into Notes or anywhere safe.';}catch(e){ta.value=t;ta.select();msg.textContent='Copy this text and keep it somewhere safe.';}};
   const sv=document.getElementById('bk-save');if(sv)sv.onclick=async()=>{try{const f=new File([backupText()],'verbes-backup-'+todayStr()+'.json',{type:'application/json'});if(!navigator.canShare({files:[f]}))throw 0;await navigator.share({files:[f]});msg.textContent='Backup saved.';}catch(e){if(!e||e.name!=='AbortError')msg.textContent="Saving a file isn't available here. Use Copy backup instead.";}};
@@ -586,19 +633,33 @@ function renderVocabStats(){
 let sesCorrect=0,sesWrong=0,streak=0,mode=1,currentVerb='',currentAnswers={};
 let m2Verb='',m2Tense='',m2TKey='',m2PL='',m2PE='',m2TL='',m2PIdx=0,m2IsImp=false,m2Answer='',m2Checked=false;
 
-function setMode(m){mode=m;
-  document.getElementById('btn-m1').classList.toggle('active',m===1);
-  document.getElementById('btn-m2').classList.toggle('active',m===2);
-  document.getElementById('btn-m3').classList.toggle('active',m===3);
+function setMode(m){mode=m;SET.mode=m;saveSet();
+  [1,2,3].forEach(i=>document.getElementById('btn-m'+i).classList.toggle('active',m===i));
   document.getElementById('mode1-verb-picker').style.display=m===1?'':'none';
-  document.getElementById('mode1-ui').style.display=m===1?'':'none';
-  document.getElementById('mode2-ui').style.display=m===2?'':'none';
-  document.getElementById('mode3-ui').style.display=m===3?'':'none';
-  document.getElementById('tense-filter').style.display=m===2?'':'none';
+  [1,2,3].forEach(i=>document.getElementById('mode'+i+'-ui').style.display=m===i?'':'none');
+  syncTenseUI();updateSrsBadge();
   if(m===1)newMode1();else if(m===2)newMode2();else newMode3();
 }
+let tensePanelOpen=false;
+function toggleTensePanel(){tensePanelOpen=!tensePanelOpen;syncTenseUI();}
+function syncTenseUI(){
+  const tf=document.getElementById('tense-filter'),tt=document.getElementById('tense-toggle');if(!tf||!tt)return;
+  tt.style.display=mode===2?'':'none';document.getElementById('sub-bar').style.display=mode===2?'':'none';tf.style.display=(mode===2&&tensePanelOpen)?'':'none';
+  const lbl=!activeTenses?'All':activeTenses.size===1?M2_TENSES.find(t=>activeTenses.has(t.key)).label:activeTenses.size+' selected';
+  tt.textContent='Tenses: '+lbl+(tensePanelOpen?' ▴':' ▾');tt.classList.toggle('on',!!activeTenses);
+}
+// Tap a button without stealing focus from the answer box, so the iPhone keyboard stays up
+// and nothing on the page moves between questions.
+function tapKeep(el,fn){
+  let x=0,y=0,moved=false,touched=0;
+  el.addEventListener('touchstart',e=>{const t=e.touches[0];x=t.clientX;y=t.clientY;moved=false;},{passive:true});
+  el.addEventListener('touchmove',e=>{const t=e.touches[0];if(Math.abs(t.clientX-x)>10||Math.abs(t.clientY-y)>10)moved=true;},{passive:true});
+  el.addEventListener('touchend',e=>{if(moved)return;e.preventDefault();touched=Date.now();fn();},{passive:false});
+  el.addEventListener('mousedown',e=>e.preventDefault());
+  el.addEventListener('click',()=>{if(Date.now()-touched>600)fn();});
+}
 function rand(a){return a[Math.floor(Math.random()*a.length)];}
-function updateScore(){document.getElementById('sc-right').textContent=sesCorrect+' correct';document.getElementById('sc-wrong').textContent=sesWrong+' wrong';document.getElementById('streak-label').textContent=streak>2?'🔥 Streak: '+streak:'';}
+function updateScore(){document.getElementById('sc-right').textContent='✓ '+sesCorrect;document.getElementById('sc-wrong').textContent='✗ '+sesWrong;document.getElementById('streak-label').textContent=streak>2?'🔥'+streak:'';}
 
 function newMode1(){const p=rand(VRAW);currentVerb=p[0];const inp=document.getElementById('mode1-verb-input');if(inp)inp.value=currentVerb;currentAnswers={};TENSES.forEach(t=>{currentAnswers[t.key]=conj(currentVerb,t.key);});renderMode1();}
 function renderMode1(){
@@ -611,8 +672,9 @@ function renderMode1(){
       :PRONOUNS.map((p,i)=>{const vf=currentAnswers[t.key][i]||'';return`<div class="pronoun-row"><span class="pronoun">${dp(p,vf)}</span><input class="conj-input" data-tense="${t.key}" data-idx="${i}" placeholder="…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button class="speak-btn" onclick="speak('${esc(vf)}',this)">&#128266;</button></div>`;}).join('');
     return`<div class="tense-block"><div class="tense-label">${t.label}</div>${rows}</div>`;
   }).join('');
-  ui.innerHTML=`<div class="card"><div class="verb-header"><span class="verb-display">${currentVerb}</span><button class="speak-btn-md" onclick="speak('${esc(currentVerb)}',this)">&#128266;</button></div><div class="verb-meaning">${m}</div><div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;">Conjugate all tenses · &#128266; to hear any form</div><div class="tenses-grid">${tenseHTML}</div><div class="btn-row"><button class="btn primary" onclick="checkMode1()">Check answers</button><button class="btn" onclick="revealMode1()">Reveal all</button><button class="btn" onclick="newMode1()" style="margin-left:auto;">New verb →</button></div></div>`;
-  ui.querySelectorAll('.conj-input').forEach(inp=>{inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkMode1();});});
+  ui.innerHTML=`<div class="card"><div class="verb-header"><span class="verb-display">${currentVerb}</span><button class="speak-btn-md" onclick="speak('${esc(currentVerb)}',this)">&#128266;</button></div><div class="verb-meaning">${m}</div><div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;">Conjugate all tenses · &#128266; to hear any form</div><div class="tenses-grid">${tenseHTML}</div><div class="btn-row m1-actions"><button class="btn primary" onclick="checkMode1()">Check</button><button class="btn" onclick="revealMode1()">Reveal</button><button class="btn" onclick="newMode1()">Next verb →</button></div></div>`;
+  ui.querySelectorAll('.conj-input').forEach(inp=>{inp.setAttribute('enterkeyhint','next');inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkMode1();});});
+  window.scrollTo(0,0);
 }
 function checkMode1(){const ui=document.getElementById('mode1-ui');let aw=false;ui.querySelectorAll('.conj-input').forEach(inp=>{const tk=inp.dataset.tense,i=parseInt(inp.dataset.idx),exp=currentAnswers[tk][i];if(!exp||exp==='—')return;inp.classList.remove('correct','wrong','revealed');if(!inp.value.trim())return;const isImp=tk==='imperatif',pIdx=isImp?[1,3,4].indexOf(i):i;if(matchesAnswer(inp.value,exp,pIdx,isImp))inp.classList.add('correct');else{inp.classList.add('wrong');aw=true;}});const af=[...ui.querySelectorAll('.conj-input')].filter(i=>{const e=currentAnswers[i.dataset.tense][parseInt(i.dataset.idx)];return e&&e!=='—';}).every(i=>i.value.trim().length>0);if(af){if(!aw){sesCorrect++;streak++;}else{sesWrong++;streak=0;}updateScore();}}
 function revealMode1(){document.getElementById('mode1-ui').querySelectorAll('.conj-input').forEach(inp=>{const t=inp.dataset.tense,i=parseInt(inp.dataset.idx),e=currentAnswers[t][i];if(!e||e==='—')return;inp.classList.remove('correct','wrong');inp.classList.add('revealed');inp.value=e;});}
@@ -626,13 +688,37 @@ function newMode2(){
   else{m2PIdx=idx;m2PL=dp(PRONOUNS[idx],ans[idx]);m2PE=PRONOUNS_EN[idx];}
   m2Answer=ans[idx];m2Checked=false;renderMode2();
 }
-function renderMode2(){
-  const m=VERB_MAP[m2Verb]||'',hint=buildHint(m2Verb,m2Tense,m2PE),ui=document.getElementById('mode2-ui');
-  ui.innerHTML=`<div class="card"><div class="verb-header"><span class="verb-display">${m2Verb}</span><button class="speak-btn-md" onclick="speak('${esc(m2Verb)}',this)">&#128266;</button></div><div class="verb-meaning">${m}</div><div class="verb-translation">${hint}</div><div class="verb-sub">${m2PL} — ${m2TL}</div><div class="m2-input-wrap"><input class="m2-input" id="m2-input" placeholder="Type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button class="btn primary" onclick="checkMode2()">Check</button></div><div class="feedback" id="m2-feedback"></div><div class="accent-hint">Accents optional — etais or était both accepted</div><div class="btn-row" style="margin-top:0.75rem;"><button class="btn" onclick="revealMode2()">Reveal</button><div id="m2-answer-audio"></div><button class="btn" onclick="newMode2()" style="margin-left:auto;">Next →</button></div></div>`;
-  const inp=document.getElementById('m2-input');inp.addEventListener('keydown',e=>{if(e.key==='Enter'){if(m2Checked)newMode2();else checkMode2();}});inp.focus();
+function ensureMode2(){
+  if(document.getElementById('m2-input'))return;
+  document.getElementById('mode2-ui').innerHTML=`<div class="card quiz-card">
+    <div class="verb-header"><span class="verb-display" id="m2-verb"></span><button class="speak-btn-md" id="m2-speak" aria-label="Hear the verb">&#128266;</button></div>
+    <div class="verb-meaning" id="m2-meaning"></div>
+    <div class="verb-translation" id="m2-hint"></div>
+    <div class="verb-sub" id="m2-sub"></div>
+    <div class="m2-input-wrap"><input class="m2-input" id="m2-input" placeholder="Answer · accents optional" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"/><button class="btn primary" id="m2-check">Check</button></div>
+    <div class="feedback" id="m2-feedback"></div>
+    <div class="btn-row"><button class="btn" id="m2-reveal">Reveal</button><div class="answer-slot" id="m2-answer-audio"></div><button class="btn" id="m2-next">Next →</button></div>
+  </div>`;
+  const inp=document.getElementById('m2-input');
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(m2Checked)newMode2();else checkMode2();}});
+  tapKeep(document.getElementById('m2-check'),checkMode2);
+  tapKeep(document.getElementById('m2-reveal'),revealMode2);
+  tapKeep(document.getElementById('m2-next'),newMode2);
+  const sp=document.getElementById('m2-speak');tapKeep(sp,()=>speak(m2Verb,sp));
 }
-function showAnswerAudio(){const wrap=document.getElementById('m2-answer-audio');if(wrap)wrap.innerHTML=`<button class="answer-speak" onclick="speak('${esc(m2Answer)}',this)">&#128266; ${m2Answer}</button>`;}
-function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`Incorrect — correct answer: <strong>${m2Answer}</strong>`;sesWrong++;streak=0;}m2Checked=true;updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);}
+function renderMode2(){
+  ensureMode2();
+  document.getElementById('m2-verb').textContent=m2Verb;
+  document.getElementById('m2-meaning').textContent=VERB_MAP[m2Verb]||'';
+  document.getElementById('m2-hint').textContent=buildHint(m2Verb,m2Tense,m2PE);
+  document.getElementById('m2-sub').textContent=m2PL+' — '+m2TL;
+  const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');
+  inp.value='';inp.className='m2-input';fb.className='feedback';fb.textContent='';
+  document.getElementById('m2-answer-audio').innerHTML='';
+  try{inp.focus({preventScroll:true});}catch(e){inp.focus();}
+}
+function showAnswerAudio(){const w=document.getElementById('m2-answer-audio');if(!w)return;w.innerHTML='';const b=document.createElement('button');b.className='answer-speak';b.textContent='🔊 '+m2Answer;tapKeep(b,()=>speak(m2Answer,b));w.appendChild(b);}
+function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${m2Answer}</strong>`;sesWrong++;streak=0;}m2Checked=true;updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);}
 function revealMode2(){const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');inp.value=m2Answer;inp.classList.remove('correct','wrong');inp.classList.add('revealed');fb.classList.remove('ok','err');fb.textContent='';m2Checked=true;showAnswerAudio();}
 
 function getWeightedPickVocab(){
@@ -669,22 +755,24 @@ function newMode3(){
 
 function renderMode3(){
   const ui=document.getElementById('mode3-ui');
-  ui.innerHTML=`<div class="card">
-    <div class="verb-header"><span class="verb-display">${m3Verb}</span><button class="speak-btn-md" onclick="speak('${esc(m3Verb)}',this)">&#128266;</button></div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;">What does this verb mean in English?</div>
-    <div class="m2-input-wrap">
-      <input class="m2-input" id="m3-input" placeholder="Type the English meaning…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <button class="btn primary" onclick="checkMode3()">Check</button>
-    </div>
-    <div class="feedback" id="m3-feedback"></div>
-    <div class="btn-row" style="margin-top:0.75rem;">
-      <button class="btn" onclick="revealMode3()">Reveal</button>
-      <button class="btn" onclick="newMode3()" style="margin-left:auto;">Next →</button>
-    </div>
-  </div>`;
-  const inp=document.getElementById('m3-input');
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){if(m3Checked)newMode3();else checkMode3();}});
-  inp.focus();
+  if(!document.getElementById('m3-input')){
+    ui.innerHTML=`<div class="card quiz-card">
+      <div class="verb-header"><span class="verb-display" id="m3-verb"></span><button class="speak-btn-md" id="m3-speak" aria-label="Hear the verb">&#128266;</button></div>
+      <div class="verb-translation" style="margin-bottom:14px;">What does this verb mean in English?</div>
+      <div class="m2-input-wrap"><input class="m2-input" id="m3-input" placeholder="English meaning" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"/><button class="btn primary" id="m3-check">Check</button></div>
+      <div class="feedback" id="m3-feedback"></div>
+      <div class="btn-row"><button class="btn" id="m3-reveal">Reveal</button><div class="answer-slot"></div><button class="btn" id="m3-next">Next →</button></div>
+    </div>`;
+    document.getElementById('m3-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(m3Checked)newMode3();else checkMode3();}});
+    tapKeep(document.getElementById('m3-check'),checkMode3);
+    tapKeep(document.getElementById('m3-reveal'),revealMode3);
+    tapKeep(document.getElementById('m3-next'),newMode3);
+    const sp=document.getElementById('m3-speak');tapKeep(sp,()=>speak(m3Verb,sp));
+  }
+  document.getElementById('m3-verb').textContent=m3Verb;
+  const inp=document.getElementById('m3-input'),fb=document.getElementById('m3-feedback');
+  inp.value='';inp.className='m2-input';fb.className='feedback';fb.textContent='';
+  try{inp.focus({preventScroll:true});}catch(e){inp.focus();}
 }
 
 function checkMode3(){
@@ -693,8 +781,8 @@ function checkMode3(){
   if(!inp.value.trim())return;
   const ok=matchesMeaning(inp.value,m3Meaning);
   inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');
-  if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='Correct!';sesCorrect++;streak++;}
-  else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`Incorrect — accepted: <strong>${m3Meaning}</strong>`;sesWrong++;streak=0;}
+  if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}
+  else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Accepted: <strong>${m3Meaning}</strong>`;sesWrong++;streak=0;}
   m3Checked=true;updateScore();recordResult(m3Verb,'vocab',ok);
 }
 
@@ -751,7 +839,7 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}c
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 loadAll();
 buildTenseChips();
-newMode1();
+setMode([1,2,3].includes(SET.mode)?SET.mode:1);
 </script>
 </body>
 </html>
