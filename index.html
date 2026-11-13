@@ -251,6 +251,30 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 .set-explain p{margin:8px 0;}
 .set-explain b{color:var(--text);font-weight:600;}
 .signature{text-align:center;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:17px;color:var(--text3);margin:28px 0 8px;letter-spacing:.02em;}
+.metrics-row{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+.stats-section{margin-top:1.6rem;padding-top:1rem;border-top:0.5px solid var(--border);}
+.stats-h{font-size:19px;font-weight:600;margin-bottom:10px;}
+.stats-h span{font-size:13px;font-weight:400;color:var(--text3);margin-left:6px;}
+.sub-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px;}
+.sub-note{font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);}
+.day-bar-n{font-size:10px;color:var(--text3);margin-bottom:2px;font-variant-numeric:tabular-nums;}
+.bar-legend{font-size:11px;color:var(--text3);margin-top:4px;}
+.srs-note{font-size:12px;color:var(--text3);margin-top:10px;}
+.btn.danger{border-width:1px;}
+:root{--bar-good:#5cb87a;--bar-mid:#e3b341;--bar-bad:#e06c5f;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bar-good:#3f9a5e;--bar-mid:#c99a2e;--bar-bad:#c4544a;}}
+:root[data-theme="dark"]{--bar-good:#3f9a5e;--bar-mid:#c99a2e;--bar-bad:#c4544a;}
+.stats-section .day-bars{height:auto;min-height:118px;overflow-x:auto;justify-content:flex-start;gap:6px;margin-bottom:6px;padding-bottom:2px;scrollbar-width:none;}
+.stats-section .day-bars::-webkit-scrollbar{display:none;}
+.stats-section .day-bar-col{flex:0 0 44px;justify-content:flex-end;}
+.day-bar-c{font-size:10px;color:var(--text3);margin-bottom:3px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.day-bar-n{font-weight:600;color:var(--text2)!important;font-size:11px!important;}
+.seg{display:flex;gap:3px;padding:3px;background:var(--bg2);border-radius:10px;margin-bottom:10px;}
+.seg-b{flex:1;min-height:36px;border:none;border-radius:8px;background:transparent;color:var(--text2);font-family:inherit;font-size:14px;}
+.seg-b.on{background:var(--bg);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg-b.on{background:var(--bg3);}}
+:root[data-theme="dark"] .seg-b.on{background:var(--bg3);}
+.row-sub{font-size:11px;color:var(--text3);}
 </style>
 </head>
 <body>
@@ -331,22 +355,25 @@ function speak(text,btn){
 function esc(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 
 // ── STORAGE (localStorage for standalone file) ────────────────────────
-const KD='frverb-daily-v2',KT='frverb-alltense-v2',KV='frverb-verbperf-v1';
-let dailyData={},tenseData={},verbData={};
+const KD='frverb-daily-v2',KT='frverb-alltense-v2',KV='frverb-verbperf-v1',KP='frverb-person-v1';
+let dailyData={},tenseData={},verbData={},personData={}; // personData: {since:'YYYY-MM-DD', p:{0..5:{total,correct}}} — Single form only, imperative excluded
 function loadAll(){
   try{const r=localStorage.getItem(KD);if(r)dailyData=JSON.parse(r);}catch(e){}
   try{const r=localStorage.getItem(KT);if(r)tenseData=JSON.parse(r);}catch(e){}
   try{const r=localStorage.getItem(KV);if(r)verbData=JSON.parse(r);}catch(e){}
+  try{const r=localStorage.getItem(KP);if(r)personData=JSON.parse(r);}catch(e){}
   updateSrsBadge();
 }
 function saveAll(){
   try{localStorage.setItem(KD,JSON.stringify(dailyData));}catch(e){}
   try{localStorage.setItem(KT,JSON.stringify(tenseData));}catch(e){}
   try{localStorage.setItem(KV,JSON.stringify(verbData));}catch(e){}
+  try{localStorage.setItem(KP,JSON.stringify(personData));}catch(e){}
 }
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function recordResult(verb,tk,ok){
+function recordResult(verb,tk,ok,pIdx){
   const t=todayStr();
+  if(pIdx!=null&&pIdx>=0&&pIdx<6){if(!personData.p){personData={since:t,p:{}};}const q=personData.p[pIdx]=personData.p[pIdx]||{total:0,correct:0};q.total++;if(ok)q.correct++;}
   if(!dailyData[t])dailyData[t]={total:0,correct:0,byTense:{}};
   dailyData[t].total++;if(ok)dailyData[t].correct++;
   if(!dailyData[t].byTense[tk])dailyData[t].byTense[tk]={total:0,correct:0};
@@ -359,8 +386,8 @@ function recordResult(verb,tk,ok){
   saveAll();updateSrsBadge();updateHeader();
 }
 function clearAllData(){
-  dailyData={};tenseData={};verbData={};
-  try{localStorage.removeItem(KD);localStorage.removeItem(KT);localStorage.removeItem(KV);}catch(e){}
+  dailyData={};tenseData={};verbData={};personData={};
+  try{localStorage.removeItem(KD);localStorage.removeItem(KT);localStorage.removeItem(KV);localStorage.removeItem(KP);}catch(e){}
   updateSrsBadge();renderStatsContent();updateHeader();
 }
 
@@ -616,6 +643,32 @@ function buildHint(verb,tk,pEN){
     default:return'';}
 }
 
+// Verb type from the verified conjugations, not from the ending alone.
+const VTYPE={};
+function verbType(v){if(VTYPE[v])return VTYPE[v];return VTYPE[v]=verbType_(v);}
+function verbType_(v){
+  const F=t=>conj(v,t).map(f=>f.replace(/^que /,''));
+  const same=(a,b)=>a.length===b.length&&a.every((x,i)=>x===b[i]);
+  if(/er$/.test(v)&&v!=='aller'){ // 1st group: regular endings; predictable stem spelling changes allowed
+    const ends=(arr,E)=>arr.every((f,i)=>f.endsWith(E[i]));
+    const fut=F('futurSimple')[0];
+    const vars=[v,v.replace(/y(er)$/,'i$1'),v.replace(/e([^aeiouyé]+er)$/,'è$1'),v.replace(/el(er)$/,'ell$1'),v.replace(/et(er)$/,'ett$1')];
+    const ok=vars.some(s=>fut===s+'ai')&&ends(F('present'),['e','es','e','ons','ez','ent'])&&ends(F('imparfait'),['ais','ais','ait','ions','iez','aient'])
+      &&ends(F('subjonctifPresent'),['e','es','e','ions','iez','ent'])&&F('participePre')[0].endsWith('ant')&&ppOf(v)===v.slice(0,-2)+'é';
+    return ok?'er':'irr';
+  }
+  if(/ir$/.test(v)){const s=v.slice(0,-2); // 2nd group = finir pattern exactly
+    const ok=same(F('present'),[s+'is',s+'is',s+'it',s+'issons',s+'issez',s+'issent'])&&same(F('imparfait'),['ais','ais','ait','ions','iez','aient'].map(e=>s+'iss'+e))
+      &&same(F('futurSimple'),['ai','as','a','ons','ez','ont'].map(e=>v+e))&&same(F('subjonctifPresent'),['e','es','e','ions','iez','ent'].map(e=>s+'iss'+e))&&ppOf(v)===s+'i'&&F('participePre')[0]===s+'issant';
+    return ok?'ir':'irr';}
+  if(/re$/.test(v)){const s=v.slice(0,-2); // attendre pattern exactly
+    const ok=same(F('present'),[s+'s',s+'s',s,s+'ons',s+'ez',s+'ent'])&&same(F('imparfait'),['ais','ais','ait','ions','iez','aient'].map(e=>s+e))
+      &&same(F('futurSimple'),['ai','as','a','ons','ez','ont'].map(e=>s+'r'+e))&&same(F('subjonctifPresent'),['e','es','e','ions','iez','ent'].map(e=>s+e))&&ppOf(v)===s+'u'&&F('participePre')[0]===s+'ant';
+    return ok?'re':'irr';}
+  return 'irr';
+}
+function ppOf(v){return conj(v,'passeCompose')[0].split(' ').slice(1).join(' ');}
+
 // ── TENSE FILTER ──────────────────────────────────────────────────────
 let activeTenses=null;
 function chipSel(sel){return sel?{background:'var(--info-bg)',color:'var(--info-text)',border:'1.5px solid var(--info-border)',fontWeight:'500'}:{background:'transparent',color:'var(--text2)',border:'1.5px solid var(--border2)',fontWeight:'400'};}
@@ -766,7 +819,7 @@ function renderSettingsPage(){
   on('rate-sel',v=>{SET.rate=+v;speak('Bonjour, je parle français');});
   document.getElementById('sp-test').onclick=e=>speak('Bonjour, je parle français',e.currentTarget);
 }
-function backupText(){return JSON.stringify({app:'frverb',v:1,at:Date.now(),daily:dailyData,tense:tenseData,verb:verbData,set:SET});}
+function backupText(){return JSON.stringify({app:'frverb',v:1,at:Date.now(),daily:dailyData,tense:tenseData,verb:verbData,person:personData,set:SET});}
 // Merge, never overwrite: for each day / tense / verb+tense keep whichever record has more attempts,
 // so restoring an older backup can't wipe newer practice.
 function restoreBackup(text){
@@ -778,6 +831,7 @@ function restoreBackup(text){
   let n=0;
   for(const d in o.daily||{}){if(newer(dailyData[d],o.daily[d])){dailyData[d]=o.daily[d];n++;}}
   for(const k in o.tense||{}){if(newer(tenseData[k],o.tense[k]))tenseData[k]=o.tense[k];}
+  if(o.person&&o.person.p){if(!personData.p)personData={since:o.person.since||todayStr(),p:{}};if(o.person.since&&o.person.since<personData.since)personData.since=o.person.since;for(const k in o.person.p){if(newer(personData.p[k],o.person.p[k]))personData.p[k]=o.person.p[k];}}
   for(const v in o.verb||{}){const rv=o.verb[v];if(!rv||typeof rv!=='object')continue;if(!verbData[v])verbData[v]={};for(const k in rv){if(newer(verbData[v][k],rv[k])){verbData[v][k]=rv[k];}}}
   saveAll();updateSrsBadge();renderStatsContent();updateHeader();
   return n?`Backup restored — ${n} day${n===1?'':'s'} of history merged in.`:'Backup checked — this device already had everything in it.';
@@ -793,57 +847,82 @@ function updateHeader(){
 function closeStats(){document.getElementById('stats-overlay').style.display='none';}
 function calcStreak(){const d=new Date(todayStr());let s=0;while(true){const k=d.toISOString().slice(0,10);if(dailyData[k]&&dailyData[k].total>0){s++;d.setDate(d.getDate()-1);}else break;}return s;}
 function pct(c,t){return t>0?Math.round(c/t*100):null;}
-function pctBar(c,t){const p=pct(c,t);if(p===null)return'';const col=p>=80?'var(--success-bg)':p>=50?'var(--warn-bg)':'var(--danger-bg)';return`<div class="tense-bar-wrap"><div class="tense-bar-fill" style="width:${p}%;background:${col};"></div></div>`;}
-function renderStatsContent(){
-  if(mode===3){renderVocabStats();return;}
-  const el=document.getElementById('stats-content');
-  const totalAll=Object.entries(tenseData).filter(([k])=>k!=='vocab').reduce((a,[,d])=>a+d.total,0);
-  const correctAll=Object.entries(tenseData).filter(([k])=>k!=='vocab').reduce((a,[,d])=>a+d.correct,0);
-  if(!totalAll){el.innerHTML=`<div class="no-data">No data yet — answer Single form questions to start tracking.</div>`;return;}
-  const today=todayStr();const todayD=dailyData[today]||{total:0,correct:0};const allPct=pct(correctAll,totalAll);const blend=Math.min(100,Math.round(totalAll/200*100));
-  const sorted=Object.keys(dailyData).sort().slice(-30);const maxT=Math.max(...sorted.map(d=>dailyData[d].total),1);
-  const bars=sorted.map(date=>{const d=dailyData[date];const p2=pct(d.correct,d.total);const h=Math.max(4,Math.round((d.total/maxT)*70));const col=p2>=80?'var(--success-bg)':p2>=50?'var(--warn-bg)':'var(--danger-bg)';return`<div class="day-bar-col"><div class="bar-seg" style="width:100%;max-width:24px;height:${h}px;background:${col};"></div><span class="day-label">${date.slice(5)}</span></div>`;}).join('');
-  const tenseRows=M2_TENSES.map(t=>{const td=tenseData[t.key]||{total:0,correct:0};const p2=pct(td.correct,td.total);return`<div class="tense-row"><span class="tense-name">${t.label}</span>${td.total?pctBar(td.correct,td.total):`<div class="tense-bar-wrap"><div style="font-size:11px;color:var(--text3);padding:2px 6px;">no data yet</div></div>`}<span class="tense-stat">${td.total?(p2+'% ('+td.correct+'/'+td.total+')'):'—'}</span></div>`;}).join('');
-  el.innerHTML=`<div class="metrics-row"><div class="metric"><div class="metric-val">${allPct}%</div><div class="metric-lbl">all-time accuracy</div></div><div class="metric"><div class="metric-val">${todayD.total?pct(todayD.correct,todayD.total)+'%':'—'}</div><div class="metric-lbl">today</div></div><div class="metric"><div class="metric-val">${totalAll.toLocaleString()}</div><div class="metric-lbl">total answered</div></div><div class="metric"><div class="metric-val">${calcStreak()}</div><div class="metric-lbl">day streak</div></div></div>
-  <div class="section-title">Daily accuracy — last ${sorted.length} practice day${sorted.length===1?'':'s'}</div>
-  <div style="margin-bottom:1.5rem;"><div class="day-bars">${bars}</div><div style="font-size:11px;color:var(--text3);">green ≥80% · yellow ≥50% · red &lt;50%</div></div>
-  <div class="section-title">Accuracy by tense — all time</div>
-  <div class="tense-rows">${tenseRows}</div>
-  <div style="font-size:12px;color:var(--text3);margin-top:0.5rem;">SRS: ${blend<100?blend+'% performance-weighted':'fully performance-weighted'}. History is saved on this device.</div>
-  <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;justify-content:flex-end;"><button class="btn sm danger" onclick="if(confirm('Clear all history?')){clearAllData();}">Clear all history</button></div>`;
+function pctBar(c,t){const p=pct(c,t);if(p===null)return'';const col=p>=80?'var(--bar-good)':p>=50?'var(--bar-mid)':'var(--bar-bad)';return`<div class="tense-bar-wrap"><div class="tense-bar-fill" style="width:${p}%;background:${col};"></div></div>`;}
+// One stats screen, the same from every tab: overall → conjugation (Single form) → verb vocab.
+// Daily records store per-tense counts, so the two exercise types are always kept apart.
+function dayPart(date,kind){const d=dailyData[date]||{total:0,correct:0,byTense:{}};const v=(d.byTense||{}).vocab||{total:0,correct:0};
+  return kind==='vocab'?{total:v.total,correct:v.correct}:{total:d.total-v.total,correct:d.correct-v.correct};}
+function statTile(val,lbl){return`<div class="metric"><div class="metric-val">${val}</div><div class="metric-lbl">${lbl}</div></div>`;}
+function dayBars(days,kind){
+  const maxT=Math.max(1,...days.map(d=>dayPart(d,kind).total));
+  return days.map(date=>{const x=dayPart(date,kind);
+    if(!x.total)return`<div class="day-bar-col"><div class="day-bar-n">&nbsp;</div><div class="day-bar-c">&nbsp;</div><div class="bar-seg" style="width:100%;max-width:24px;height:3px;background:var(--bg3);"></div><span class="day-label">${date.slice(5)}</span></div>`;
+    const p2=pct(x.correct,x.total),h=Math.max(6,Math.round(x.total/maxT*64));
+    const col=p2>=80?'var(--bar-good)':p2>=50?'var(--bar-mid)':'var(--bar-bad)';
+    return`<div class="day-bar-col"><div class="day-bar-n">${p2}%</div><div class="day-bar-c">${x.correct}/${x.total}</div><div class="bar-seg" style="width:100%;max-width:24px;height:${h}px;background:${col};"></div><span class="day-label">${date.slice(5)}</span></div>`;}).join('');
 }
-
-function renderVocabStats(){
+function weakRows(list,empty){return list.length?list.map(r=>`<div class="tense-row"><span class="tense-name">${r.v}${r.m?` <span style="font-size:11px;color:var(--text3);font-style:italic;">${r.m}</span>`:''}</span>${pctBar(r.c,r.t)}<span class="tense-stat">${r.p}% (${r.c}/${r.t})</span></div>`).join(''):`<div style="font-size:13px;color:var(--text3);">${empty}</div>`;}
+function renderStatsContent(){
   const el=document.getElementById('stats-content');
-  const vd=tenseData['vocab']||{total:0,correct:0};
-  if(!vd.total){el.innerHTML=`<div class="no-data">No vocab data yet — answer Vocab questions to start tracking.</div>`;return;}
   const today=todayStr();
-  const todayV=((dailyData[today]||{}).byTense||{})['vocab']||{total:0,correct:0};
-  const allPct=pct(vd.correct,vd.total);
-  const sorted=Object.keys(dailyData).sort().slice(-30);
-  const maxT=Math.max(...sorted.map(d=>((dailyData[d].byTense||{})['vocab']||{total:0}).total),1);
-  const bars=sorted.map(date=>{
-    const dv=((dailyData[date].byTense||{})['vocab'])||{total:0,correct:0};
-    if(!dv.total)return`<div class="day-bar-col"><div class="bar-seg" style="width:100%;max-width:24px;height:3px;background:var(--bg3);"></div><span class="day-label">${date.slice(5)}</span></div>`;
-    const p2=pct(dv.correct,dv.total);const h=Math.max(4,Math.round((dv.total/maxT)*70));
-    const col=p2>=80?'var(--success-bg)':p2>=50?'var(--warn-bg)':'var(--danger-bg)';
-    return`<div class="day-bar-col"><div class="bar-seg" style="width:100%;max-width:24px;height:${h}px;background:${col};"></div><span class="day-label">${date.slice(5)}</span></div>`;
-  }).join('');
-  const weakVerbs=VRAW
-    .filter(([v])=>verbData[v]&&verbData[v]['vocab']&&verbData[v]['vocab'].total>=3)
-    .map(([v,m])=>{const d=verbData[v]['vocab'];return{v,m,p:pct(d.correct,d.total),c:d.correct,t:d.total};})
-    .sort((a,b)=>a.p-b.p).slice(0,10);
-  const verbRowsHTML=weakVerbs.length
-    ?weakVerbs.map(r=>`<div class="tense-row"><span class="tense-name">${r.v} <span style="font-size:11px;color:var(--text3);font-style:italic;">${r.m}</span></span>${pctBar(r.c,r.t)}<span class="tense-stat">${r.p}% (${r.c}/${r.t})</span></div>`).join('')
-    :`<div style="font-size:13px;color:var(--text3);">Answer at least 3 questions per verb to see rankings.</div>`;
-  const blend=Math.min(100,Math.round(vd.total/200*100));
-  el.innerHTML=`<div class="metrics-row"><div class="metric"><div class="metric-val">${allPct}%</div><div class="metric-lbl">all-time accuracy</div></div><div class="metric"><div class="metric-val">${todayV.total?pct(todayV.correct,todayV.total)+'%':'—'}</div><div class="metric-lbl">today</div></div><div class="metric"><div class="metric-val">${vd.total.toLocaleString()}</div><div class="metric-lbl">total answered</div></div><div class="metric"><div class="metric-val">${calcStreak()}</div><div class="metric-lbl">day streak</div></div></div>
-  <div class="section-title">Daily accuracy — last ${sorted.length} practice day${sorted.length===1?'':'s'}</div>
-  <div style="margin-bottom:1.5rem;"><div class="day-bars">${bars}</div><div style="font-size:11px;color:var(--text3);">green ≥80% · yellow ≥50% · red &lt;50%</div></div>
-  <div class="section-title">Weakest verbs — min. 3 attempts</div>
-  <div class="tense-rows">${verbRowsHTML}</div>
-  <div style="font-size:12px;color:var(--text3);margin-top:0.5rem;">SRS: ${blend<100?blend+'% performance-weighted':'fully performance-weighted'}.</div>
-  <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;justify-content:flex-end;"><button class="btn sm danger" onclick="if(confirm('Clear all history?')){clearAllData();}">Clear all history</button></div>`;
+  const days=Object.keys(dailyData).filter(d=>dailyData[d].total>0).sort().slice(-30);
+  const allT=Object.values(tenseData).reduce((a,d)=>a+d.total,0);
+  if(!allT){el.innerHTML=`<div class="no-data">No data yet — answer Single form or Vocab questions to start tracking.</div>`;return;}
+  const tdAll=dailyData[today]||{total:0,correct:0};
+  const legend=`<div class="bar-legend">Above each bar: % correct and correct/answered · height = answers that day · colour: green ≥80% · yellow ≥50% · red &lt;50%${days.length>7?' · swipe for older days':''}</div>`;
+  // ── conjugation (everything except vocab) ──
+  const cE=Object.entries(tenseData).filter(([k])=>k!=='vocab');
+  const cT=cE.reduce((a,[,d])=>a+d.total,0),cC=cE.reduce((a,[,d])=>a+d.correct,0),cToday=dayPart(today,'conj');
+  let conj;
+  if(!cT)conj=`<div class="no-data" style="padding:1rem 0;">No Single form answers yet.</div>`;
+  else{
+    const tenseRows=M2_TENSES.map(t=>{const td=tenseData[t.key]||{total:0,correct:0};return`<div class="tense-row"><span class="tense-name">${t.label}</span>${td.total?pctBar(td.correct,td.total):`<div class="tense-bar-wrap"><div style="font-size:11px;color:var(--text3);padding:0 8px;height:100%;display:flex;align-items:center;">no data yet</div></div>`}<span class="tense-stat">${td.total?pct(td.correct,td.total)+'% ('+td.correct+'/'+td.total+')':'—'}</span></div>`;}).join('');
+    const statRow=(label,sub,d)=>`<div class="tense-row"><span class="tense-name">${label}${sub?` <span class="row-sub">${sub}</span>`:''}</span>${d.total?pctBar(d.correct,d.total):`<div class="tense-bar-wrap"><div style="font-size:11px;color:var(--text3);padding:0 8px;height:100%;display:flex;align-items:center;">no data yet</div></div>`}<span class="tense-stat">${d.total?pct(d.correct,d.total)+'% ('+d.correct+'/'+d.total+')':'—'}</span></div>`;
+    const by=SET.statsBy||'tense';
+    let byHTML='';
+    if(by==='tense')byHTML=`<div class="tense-rows">${tenseRows}</div>`;
+    else if(by==='type'){
+      const g={er:{total:0,correct:0,n:0},ir:{total:0,correct:0,n:0},re:{total:0,correct:0,n:0},irr:{total:0,correct:0,n:0}};
+      for(const [v] of VRAW){const t=verbType(v);g[t].n++;const vd=verbData[v]||{};for(const k in vd){if(k==='vocab')continue;g[t].total+=vd[k].total;g[t].correct+=vd[k].correct;}}
+      byHTML=`<div class="tense-rows">${statRow('-er','parler type · '+g.er.n+' verbs',g.er)}${statRow('-ir','finir type · '+g.ir.n+' verbs',g.ir)}${statRow('-re','attendre type · '+g.re.n+' verbs',g.re)}${statRow('Irregular',g.irr.n+' verbs',g.irr)}</div>
+      <div class="srs-note">A verb counts as ‑er, ‑ir or ‑re only if every form follows that pattern (spelling changes like manger or appeler still count as ‑er). Anything else — aller, envoyer, partir, prendre… — is irregular.</div>`;
+    }else{
+      const P=personData.p||{},L=['je','tu','il/elle/on','nous','vous','ils/elles'];
+      byHTML=personData.since?`<div class="tense-rows">${L.map((l,k)=>statRow(l,'',P[k]||{total:0,correct:0})).join('')}</div>
+      <div class="srs-note">Tracked since ${personData.since}. Imperative answers aren't included (they have no pronoun).</div>`
+      :`<div class="srs-note" style="margin-top:4px;">Person tracking starts with your next Single form answer — earlier history only recorded verb and tense.</div>`;
+    }
+    const seg=`<div class="seg" role="tablist">${[['tense','Tense'],['type','Verb type'],['person','Person']].map(([k,l])=>`<button class="seg-b${by===k?' on':''}" data-by="${k}">${l}</button>`).join('')}</div>`;
+    const weak=VRAW.map(([v])=>{const vd=verbData[v]||{};let t=0,c=0;for(const k in vd){if(k==='vocab')continue;t+=vd[k].total;c+=vd[k].correct;}return{v,t,c,p:pct(c,t)};})
+      .filter(r=>r.t>=3&&r.p<100).sort((a,b)=>a.p-b.p||b.t-a.t).slice(0,8);
+    const blend=Math.min(100,Math.round(cT/200*100));
+    conj=`<div class="metrics-row">${statTile(pct(cC,cT)+'%','accuracy')}${statTile(cT,'answered')}${statTile(cToday.total?pct(cToday.correct,cToday.total)+'%':'—','today'+(cToday.total?' ('+cToday.total+')':''))}</div>
+    <div class="sub-title">Daily</div><div class="day-bars">${dayBars(days,'conj')}</div>${legend}
+    <div class="sub-title">Accuracy by</div>${seg}${byHTML}
+    <div class="sub-title">Weakest verbs <span class="sub-note">min. 3 answers</span></div><div class="tense-rows">${weakRows(weak,'No weak spots yet — verbs show up here once you’ve answered them 3+ times and missed some.')}</div>
+    <div class="srs-note">Question picking: ${blend<100?blend+'% based on your results, the rest on verb frequency':'fully based on your results'}.</div>`;
+  }
+  // ── verb vocab ──
+  const vd=tenseData.vocab||{total:0,correct:0},vToday=dayPart(today,'vocab');
+  let voc;
+  if(!vd.total)voc=`<div class="no-data" style="padding:1rem 0;">No Vocab answers yet.</div>`;
+  else{
+    const weak=VRAW.filter(([v])=>verbData[v]&&verbData[v].vocab&&verbData[v].vocab.total>=2)
+      .map(([v,m])=>{const d=verbData[v].vocab;return{v,m:m.split(',')[0],p:pct(d.correct,d.total),c:d.correct,t:d.total};})
+      .filter(r=>r.p<100).sort((a,b)=>a.p-b.p||b.t-a.t).slice(0,8);
+    const blend=Math.min(100,Math.round(vd.total/200*100));
+    voc=`<div class="metrics-row">${statTile(pct(vd.correct,vd.total)+'%','accuracy')}${statTile(vd.total,'answered')}${statTile(vToday.total?pct(vToday.correct,vToday.total)+'%':'—','today'+(vToday.total?' ('+vToday.total+')':''))}</div>
+    <div class="sub-title">Daily</div><div class="day-bars">${dayBars(days,'vocab')}</div>${legend}
+    <div class="sub-title">Most-missed words <span class="sub-note">min. 2 answers</span></div><div class="tense-rows">${weakRows(weak,'No misses yet — or answer a word at least twice to see it here.')}</div>
+    <div class="srs-note">Question picking: ${blend<100?blend+'% based on your results, the rest on verb frequency':'fully based on your results'}.</div>`;
+  }
+  el.innerHTML=`<div class="metrics-row">${statTile(tdAll.total,'answered today')}${statTile(dayStreak(),'day streak')}${statTile(allT,'answered all time')}</div>
+  <div class="stats-section"><div class="stats-h">Conjugation <span>Single form</span></div>${conj}</div>
+  <div class="stats-section"><div class="stats-h">Verb vocab <span>Vocab</span></div>${voc}</div>
+  <div class="srs-note" style="margin-top:1rem;">Conjugate mode isn't tracked. History is saved on this device only.</div>
+  <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;justify-content:flex-end;"><button class="btn sm danger" onclick="if(confirm('Clear all history? This can\\'t be undone.')){clearAllData();}">Clear all history</button></div>`;
+  el.querySelectorAll('.seg-b').forEach(b=>b.onclick=()=>{SET.statsBy=b.dataset.by;saveSet();renderStatsContent();});
+  el.querySelectorAll('.day-bars').forEach(d=>{d.scrollLeft=d.scrollWidth;}); // newest day in view; swipe left for older
 }
 
 // ── QUIZ ──────────────────────────────────────────────────────────────
@@ -950,7 +1029,7 @@ function scheduleAdvance(m,fn){clearTimeout(advTimer);advTimer=setTimeout(()=>{i
 function setCheckLabel(id,done){const b=document.getElementById(id);if(b){b.textContent=done?'Next →':'Check';b.classList.toggle('primary',true);}}
 function hescQ(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showAnswerAudio(){const w=document.getElementById('m2-answer-audio');if(!w)return;w.innerHTML='';const b=document.createElement('button');b.className='answer-speak';b.textContent='🔊 '+fullForm(m2PL,m2Answer,m2IsImp);tapKeep(b,()=>speak(m2Answer,b));w.appendChild(b);}
-function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${hescQ(fullForm(m2PL,m2Answer,m2IsImp))}</strong>`;sesWrong++;streak=0;}m2Checked=true;setCheckLabel('m2-check',true);updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok);
+function checkMode2(){if(m2Checked)return;const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');if(!inp.value.trim())return;const ok=matchesAnswer(inp.value,m2Answer,m2PIdx,m2IsImp);inp.classList.remove('correct','wrong');fb.classList.remove('ok','err');if(ok){inp.classList.add('correct');fb.classList.add('ok');fb.textContent='✓ Correct!';sesCorrect++;streak++;}else{inp.classList.add('wrong');fb.classList.add('err');fb.innerHTML=`✗ Answer: <strong>${hescQ(fullForm(m2PL,m2Answer,m2IsImp))}</strong>`;sesWrong++;streak=0;}m2Checked=true;setCheckLabel('m2-check',true);updateScore();showAnswerAudio();recordResult(m2Verb,m2TKey,ok,m2IsImp?null:m2PIdx);
   if(SET.autoPlay){const ab=document.querySelector('#m2-answer-audio .answer-speak');speak(m2Answer,ab);}
   if(ok&&SET.autoAdvance)scheduleAdvance(2,()=>{if(m2Checked)newMode2();});}
 function revealMode2(){const inp=document.getElementById('m2-input'),fb=document.getElementById('m2-feedback');inp.value=m2Answer;inp.classList.remove('correct','wrong');inp.classList.add('revealed');fb.classList.remove('ok','err');fb.textContent='';m2Checked=true;setCheckLabel('m2-check',true);showAnswerAudio();if(SET.autoPlay)speak(m2Answer,document.querySelector('#m2-answer-audio .answer-speak'));}
