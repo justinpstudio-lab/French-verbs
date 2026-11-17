@@ -275,6 +275,22 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg-b.on{background:var(--bg3);}}
 :root[data-theme="dark"] .seg-b.on{background:var(--bg3);}
 .row-sub{font-size:11px;color:var(--text3);}
+.ref-search{position:relative;margin:4px 0 6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+#ref-q{width:100%;box-sizing:border-box;padding:11px 40px 11px 14px;min-height:46px;border:1px solid var(--border2);border-radius:12px;background:var(--bg);color:var(--text);font-size:16px;font-family:inherit;outline:none;-webkit-appearance:none;}
+#ref-q:focus{border-color:var(--info-border);}
+#ref-q::-webkit-search-cancel-button{display:none;}
+.ref-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:none;border-radius:16px;background:var(--bg2);color:var(--text2);font-size:13px;}
+#ref-results{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.ref-res{display:grid;grid-template-columns:1fr auto;grid-template-areas:"v t" "m m";text-align:left;gap:2px 8px;padding:10px 12px;border:0.5px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font-family:inherit;}
+.ref-res:active{background:var(--bg2);}
+.ref-res-v{grid-area:v;font-size:19px;font-weight:600;}
+.ref-res-t{grid-area:t;align-self:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;color:var(--info-text);background:var(--info-bg);border-radius:10px;padding:2px 8px;white-space:nowrap;}
+.ref-res-m{grid-area:m;font-size:14px;color:var(--text2);font-style:italic;}
+.ref-none{font-size:14px;color:var(--text3);padding:8px 2px;font-style:italic;}
+.ref-back{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;color:var(--info-text);background:none;border:none;padding:8px 2px;min-height:44px;}
+.tap-verb{cursor:pointer;border-radius:8px;}
+.tap-verb:active{background:var(--bg2);}
+.tap-chev{float:right;margin-left:6px;color:var(--text3);}
 </style>
 </head>
 <body>
@@ -289,7 +305,7 @@ body{font-size:16px;overscroll-behavior-y:none;touch-action:manipulation;}
     <button class="mode-btn active" id="btn-m1" onclick="setMode(1)">Conjugate</button>
     <button class="mode-btn" id="btn-m2" onclick="setMode(2)">Single form</button>
     <button class="mode-btn" id="btn-m3" onclick="setMode(3)">Vocab</button>
-    <button class="mode-btn ref-tab" id="btn-m4" onclick="setMode(4)">Common conjugations</button>
+    <button class="mode-btn ref-tab" id="btn-m4" onclick="setMode(4)">Conjugations</button>
   </div>
   <div class="sub-bar" id="sub-bar">
     <button class="tense-toggle" id="tense-toggle" onclick="toggleTensePanel()" style="display:none;">Tenses: All ▾</button>
@@ -861,7 +877,7 @@ function dayBars(days,kind){
     const col=p2>=80?'var(--bar-good)':p2>=50?'var(--bar-mid)':'var(--bar-bad)';
     return`<div class="day-bar-col"><div class="day-bar-n">${p2}%</div><div class="day-bar-c">${x.correct}/${x.total}</div><div class="bar-seg" style="width:100%;max-width:24px;height:${h}px;background:${col};"></div><span class="day-label">${date.slice(5)}</span></div>`;}).join('');
 }
-function weakRows(list,empty){return list.length?list.map(r=>`<div class="tense-row"><span class="tense-name">${r.v}${r.m?` <span style="font-size:11px;color:var(--text3);font-style:italic;">${r.m}</span>`:''}</span>${pctBar(r.c,r.t)}<span class="tense-stat">${r.p}% (${r.c}/${r.t})</span></div>`).join(''):`<div style="font-size:13px;color:var(--text3);">${empty}</div>`;}
+function weakRows(list,empty){return list.length?list.map(r=>`<div class="tense-row tap-verb" data-verb="${attr(r.v)}" role="button"><span class="tense-name"><span class="tap-chev">›</span>${r.v}${r.m?` <span style="font-size:11px;color:var(--text3);font-style:italic;">${r.m}</span>`:''}</span>${pctBar(r.c,r.t)}<span class="tense-stat">${r.p}% (${r.c}/${r.t})</span></div>`).join(''):`<div style="font-size:13px;color:var(--text3);">${empty}</div>`;}
 function renderStatsContent(){
   const el=document.getElementById('stats-content');
   const today=todayStr();
@@ -899,7 +915,7 @@ function renderStatsContent(){
     conj=`<div class="metrics-row">${statTile(pct(cC,cT)+'%','accuracy')}${statTile(cT,'answered')}${statTile(cToday.total?pct(cToday.correct,cToday.total)+'%':'—','today'+(cToday.total?' ('+cToday.total+')':''))}</div>
     <div class="sub-title">Daily</div><div class="day-bars">${dayBars(days,'conj')}</div>${legend}
     <div class="sub-title">Accuracy by</div>${seg}${byHTML}
-    <div class="sub-title">Weakest verbs <span class="sub-note">min. 3 answers</span></div><div class="tense-rows">${weakRows(weak,'No weak spots yet — verbs show up here once you’ve answered them 3+ times and missed some.')}</div>
+    <div class="sub-title">Weakest verbs <span class="sub-note">min. 3 answers · tap to see the conjugation</span></div><div class="tense-rows">${weakRows(weak,'No weak spots yet — verbs show up here once you’ve answered them 3+ times and missed some.')}</div>
     <div class="srs-note">Question picking: ${blend<100?blend+'% based on your results, the rest on verb frequency':'fully based on your results'}.</div>`;
   }
   // ── verb vocab ──
@@ -913,7 +929,7 @@ function renderStatsContent(){
     const blend=Math.min(100,Math.round(vd.total/200*100));
     voc=`<div class="metrics-row">${statTile(pct(vd.correct,vd.total)+'%','accuracy')}${statTile(vd.total,'answered')}${statTile(vToday.total?pct(vToday.correct,vToday.total)+'%':'—','today'+(vToday.total?' ('+vToday.total+')':''))}</div>
     <div class="sub-title">Daily</div><div class="day-bars">${dayBars(days,'vocab')}</div>${legend}
-    <div class="sub-title">Most-missed words <span class="sub-note">min. 2 answers</span></div><div class="tense-rows">${weakRows(weak,'No misses yet — or answer a word at least twice to see it here.')}</div>
+    <div class="sub-title">Most-missed words <span class="sub-note">min. 2 answers · tap to see the conjugation</span></div><div class="tense-rows">${weakRows(weak,'No misses yet — or answer a word at least twice to see it here.')}</div>
     <div class="srs-note">Question picking: ${blend<100?blend+'% based on your results, the rest on verb frequency':'fully based on your results'}.</div>`;
   }
   el.innerHTML=`<div class="metrics-row">${statTile(tdAll.total,'answered today')}${statTile(dayStreak(),'day streak')}${statTile(allT,'answered all time')}</div>
@@ -921,6 +937,7 @@ function renderStatsContent(){
   <div class="stats-section"><div class="stats-h">Verb vocab <span>Vocab</span></div>${voc}</div>
   <div class="srs-note" style="margin-top:1rem;">Conjugate mode isn't tracked. History is saved on this device only.</div>
   <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;justify-content:flex-end;"><button class="btn sm danger" onclick="if(confirm('Clear all history? This can\\'t be undone.')){clearAllData();}">Clear all history</button></div>`;
+  el.querySelectorAll('.tap-verb').forEach(r=>r.onclick=()=>{closeStats();openRefVerb(r.dataset.verb);});
   el.querySelectorAll('.seg-b').forEach(b=>b.onclick=()=>{SET.statsBy=b.dataset.by;saveSet();renderStatsContent();});
   el.querySelectorAll('.day-bars').forEach(d=>{d.scrollLeft=d.scrollWidth;}); // newest day in view; swipe left for older
 }
@@ -934,7 +951,7 @@ function setMode(m){mode=m;SET.mode=m;saveSet();
   document.getElementById('mode1-verb-picker').style.display=m===1?'':'none';
   [1,2,3,4].forEach(i=>document.getElementById('mode'+i+'-ui').style.display=m===i?'':'none');
   syncTenseUI();updateSrsBadge();
-  if(m===1)newMode1();else if(m===2)newMode2();else if(m===3)newMode3();else renderRef();
+  if(m===1)newMode1();else if(m===2)newMode2();else if(m===3)newMode3();else{if(!refKeep)refPage=null;refKeep=false;renderRef();}
 }
 let tensePanelOpen=false;
 function toggleTensePanel(){tensePanelOpen=!tensePanelOpen;syncTenseUI();}
@@ -1152,8 +1169,25 @@ const FALLOIR_EN={present:'it is necessary',imparfait:'it was necessary',futurSi
 const FALLOIR={present:'faut',imparfait:'fallait',futurSimple:'faudra',conditionnelPresent:'faudrait',subjonctifPresent:'faille',passeCompose:'a fallu',plusQueParfait:'avait fallu',conditionnelPasse:'aurait fallu',subjonctifPasse:'ait fallu'};
 function hesc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 // split a form into stem + bold ending
+const REF_AUTO={};
+// Regular verbs whose every form keeps the plain stem (marcher, choisir, vendre…) get stem/ending bolding like parler.
+function refReg(v){
+  if(REF_REG[v])return REF_REG[v];if(v in REF_AUTO)return REF_AUTO[v];
+  let r=null;const t=v==='falloir'?'irr':verbType(v);
+  if(t!=='irr'){const st=v.slice(0,-2),fut=t==='re'?v.slice(0,-1):v;
+    // strict: every form must be exactly stem + the standard ending (so manger/appeler fall back to plain ending bolding)
+    const E={er:{present:['e','es','e','ons','ez','ent'],imparfait:['ais','ais','ait','ions','iez','aient'],subjonctifPresent:['e','es','e','ions','iez','ent'],participePre:['ant']},
+             ir:{present:['is','is','it','issons','issez','issent'],imparfait:['issais','issais','issait','issions','issiez','issaient'],subjonctifPresent:['isse','isses','isse','issions','issiez','issent'],participePre:['issant']},
+             re:{present:['s','s','','ons','ez','ent'],imparfait:['ais','ais','ait','ions','iez','aient'],subjonctifPresent:['e','es','e','ions','iez','ent'],participePre:['ant']}}[t];
+    const FU={futurSimple:['ai','as','a','ons','ez','ont'],conditionnelPresent:['ais','ais','ait','ions','iez','aient']};
+    const okE=Object.entries(E).every(([k,en])=>conj(v,k).slice(0,en.length).every((f,i)=>f.replace(/^que /,'')===st+en[i]));
+    const okF=Object.entries(FU).every(([k,en])=>conj(v,k).every((f,i)=>f===fut+en[i]));
+    if(okE&&okF)r={stem:st,fut};}
+  return REF_AUTO[v]=r;
+}
+function refTypeLabel(v){if(v==='falloir')return'Irregular (impersonal)';const t=verbType(v);return t==='irr'?'Irregular':'Regular -'+t+(refReg(v)?'':' · spelling changes');}
 function refSplit(verb,tense,i,form){
-  const r=REF_REG[verb];
+  const r=refReg(verb);
   if(r){const st=(tense==='futurSimple'||tense==='conditionnelPresent')?r.fut:r.stem;
     return form.startsWith(st)&&form.length>st.length?[st,form.slice(st.length)]:[form,''];}
   const c=tense==='imperatif'?IMP_ENDS[i]:tense==='participePre'?['ant']:(REF_ENDS[tense]||[])[i];
@@ -1165,13 +1199,44 @@ const fmt=([st,en])=>hesc(st)+(en?'<b>'+hesc(en)+'</b>':'');
 const REF_PR=['je','tu','il/elle','nous','vous','ils/elles'];
 function refPron(i,next,subj){const el=i===0&&swv(next);const p=el?"j’":REF_PR[i]+' ';
   if(!subj)return p;return(i===2||i===5)?'qu’'+p:(el?'que j’':'que '+p);}
+let refPage=null,refQuery='',refKeep=false;
+function openRefVerb(v){refPage=v;refKeep=true;if(mode!==4)setMode(4);else{refKeep=false;renderRef();}}
+function refSearch(q){
+  const n=stripAccents(q.toLowerCase().trim()).replace(/^(se |s'|s’)/,'');if(!n)return[];
+  const all=[...VRAW.map(x=>x[0]),'falloir'];const key=v=>stripAccents(v.toLowerCase());
+  const out=[];const add=(v,why)=>{if(out.length<5&&!out.some(o=>o.v===v))out.push({v,why});};
+  all.filter(v=>key(v).startsWith(n)).forEach(v=>add(v,''));              // French, starts with — most common first
+  if(out.length<5)all.filter(v=>key(v).includes(n)).forEach(v=>add(v,''));  // French, contains
+  const en=n.replace(/^to\s+/,'');
+  if(out.length<5&&en.length>=2)VRAW.filter(([v,m])=>stripAccents(m.toLowerCase()).split(',').map(x=>x.trim().replace(/^to\s+/,'')).some(seg=>seg.startsWith(en)||seg.split(/[^a-z]+/).some(w=>w.startsWith(en)))).forEach(([v])=>add(v,'en')); // English meaning
+  return out;
+}
+function renderRefResults(){
+  const box=document.getElementById('ref-results');if(!box)return;
+  const res=refSearch(refQuery);
+  document.getElementById('ref-groups').style.display=refQuery.trim()?'none':'';
+  if(!refQuery.trim()){box.innerHTML='';return;}
+  box.innerHTML=res.length?res.map(({v,why})=>`<button class="ref-res" data-v="${attr(v)}"><span class="ref-res-v">${hesc(v)}</span><span class="ref-res-m">${hesc(v==='falloir'?'to be necessary, must':(VERB_MAP[v]||'').split(',').slice(0,2).join(','))}${why==='en'?' · English match':''}</span><span class="ref-res-t">${refTypeLabel(v).replace(' · spelling changes','')}</span></button>`).join('')
+    :`<div class="ref-none">No verb found. The app has the 600 most common French verbs.</div>`;
+  box.querySelectorAll('.ref-res').forEach(b=>b.onclick=()=>openRefVerb(b.dataset.v));
+}
 function renderRef(){
   const ui=document.getElementById('mode4-ui');
-  const v=REF_GROUPS.some(g=>g[1].some(x=>(Array.isArray(x)?x[0]:x)===SET.refVerb))?SET.refVerb:'parler';
-  const chips=REF_GROUPS.map(([g,list])=>`<div class="ref-group">${g}</div><div class="ref-chips">${list.map(x=>{const[k,l]=Array.isArray(x)?x:[x,x];return`<button class="ref-chip${k===v?' on':''}" data-v="${k}">${l}</button>`;}).join('')}</div>`).join('');
-  ui.innerHTML=`<div class="ref-page"><div class="ref-intro">Reference — not a quiz. Pick a verb to see its full conjugation. Tap any line to hear it.</div>${chips}<div class="ref-card" id="ref-card"></div></div>`;
-  ui.querySelectorAll('.ref-chip').forEach(b=>b.onclick=()=>{SET.refVerb=b.dataset.v;saveSet();renderRef();document.getElementById('ref-card').scrollIntoView({behavior:'smooth',block:'start'});});
-  renderRefCard(v);
+  if(refPage){
+    ui.innerHTML=`<div class="ref-page"><button class="ref-back" id="ref-back">‹ Conjugations</button><div class="ref-card" id="ref-card"></div></div>`;
+    document.getElementById('ref-back').onclick=()=>{refPage=null;renderRef();window.scrollTo(0,0);};
+    renderRefCard(refPage);window.scrollTo(0,0);return;
+  }
+  const chips=REF_GROUPS.map(([g,list])=>`<div class="ref-group">${g}</div><div class="ref-chips">${list.map(x=>{const[k,l]=Array.isArray(x)?x:[x,x];return`<button class="ref-chip" data-v="${k}">${l}</button>`;}).join('')}</div>`).join('');
+  ui.innerHTML=`<div class="ref-page"><div class="ref-intro">Reference — not a quiz. Search any of the 600 verbs, or pick a common one below. Tap any line on a verb page to hear it.</div>
+    <div class="ref-search"><input id="ref-q" type="search" placeholder="Search a verb… (e.g. marcher)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" value="${attr(refQuery)}"><button class="ref-clear" id="ref-clear" aria-label="Clear search"${refQuery?'':' hidden'}>✕</button></div>
+    <div id="ref-results"></div><div id="ref-groups">${chips}</div></div>`;
+  const q=document.getElementById('ref-q'),cl=document.getElementById('ref-clear');
+  q.oninput=()=>{refQuery=q.value;cl.hidden=!refQuery;renderRefResults();};
+  q.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const r=refSearch(refQuery);if(r.length){q.blur();openRefVerb(r[0].v);}}};
+  cl.onclick=()=>{refQuery='';q.value='';cl.hidden=true;renderRefResults();q.focus();};
+  ui.querySelectorAll('.ref-chip').forEach(b=>b.onclick=()=>openRefVerb(b.dataset.v));
+  renderRefResults();
 }
 function renderRefCard(v){
   const el=document.getElementById('ref-card');
@@ -1200,8 +1265,8 @@ function renderRefCard(v){
         const parts=f.split(' ');
         if(parts.length===2){ // compound: helper + participle
           const pp=ppShow(i,parts[1]);
-          const ppSplit=REF_REG[v]?refSplit(v,'pp',i,pp):[pp,''];
-          if(REF_REG[v]){const st=REF_REG[v].stem;ppSplit[0]=st;ppSplit[1]=pp.slice(st.length);}
+          const rr=refReg(v);const ppSplit=[pp,''];
+          if(rr&&pp.startsWith(rr.stem)){ppSplit[0]=rr.stem;ppSplit[1]=pp.slice(rr.stem.length);}
           rows.push([refPron(i,parts[0],subj),null,hesc(parts[0])+' '+fmt(ppSplit)]);
         }else rows.push([refPron(i,f,subj),refSplit(v,t,i,f)]);
       });
@@ -1214,10 +1279,10 @@ function renderRefCard(v){
       return`<div class="ref-row" data-say="${attr(say)}">${p?`<span class="ref-pr">${hesc(p)}</span>`:''}<span class="ref-f">${shown}</span><span class="ref-en">${hesc(en)}</span></div>`;}).join('')}</div>`;
   }
   const pprs=isF?'—':conj(v,'participePre')[0];
-  const r=REF_REG[v];
+  const r=refReg(v);
   el.innerHTML=`<div class="ref-verb">${hesc(v)}<button class="speak-btn-md" id="ref-say" aria-label="Hear the verb">&#128266;</button></div>
     <div class="ref-mean">${hesc(meaning)}</div>
-    <div class="ref-meta">${r?`Stem: <b>${hesc(r.stem)}-</b> · `:''}Helper verb: <b>${d.aux}</b> · Past participle: <b>${hesc(ppSing)}</b>${etre?' (agrees: allé, allée, allés, allées)':''} · Present participle: <b>${hesc(pprs)}</b></div>
+    <div class="ref-meta">Type: <b>${refTypeLabel(v)}</b> · ${r?`Stem: <b>${hesc(r.stem)}-</b> · `:''}Helper verb: <b>${d.aux}</b> · Past participle: <b>${hesc(ppSing)}</b>${etre?' (agrees: allé, allée, allés, allées)':''} · Present participle: <b>${hesc(pprs)}</b></div>
     ${REF_NOTES[v]?`<div class="ref-note">${REF_NOTES[v]}</div>`:''}
     <div class="ref-grid">${blocks}</div>
     <div class="ref-legend"><b>Bold</b> = ending.${r?'':' For irregular verbs the plain part (the stem) is what changes — that’s the bit to memorize.'}</div>`;
